@@ -1,34 +1,15 @@
 {
-  "db": {
-    "name": "db",
-    "connector": "memory"
-  },
-  "geo": {
-    "name": "geo",
-    "connector": "rest",
-    "operations": [
-      {
-        "template": {
-          "method": "GET",
-          "url": "http://maps.googleapis.com/maps/api/geocode/{format=json}",
-          "headers": {
-            "accepts": "application/json",
-            "content-type": "application/json"
-          },
-          "query": {
-            "address": "{street},{city},{zipcode}",
-            "sensor": "{sensor=false}"
-          },
-          "responsePath": "$.results[0].geometry.location"
-        },
-        "functions": {
-          "geocode": [
-            "street",
-            "city",
-            "zipcode"
-          ]
-        }
-      }
-    ]
-  }
+    "db": {
+        "name": "db",
+        "connector": "memory"
+    },
+    "cloudant": {
+        "name": "cloudant",
+        "connector": "cloudant",
+        "host": "2938df94-39f0-4436-9e7a-5e65210e40fc-bluemix.cloudant.com",
+        "port": 443,
+        "database": "dietview",
+        "username": "2938df94-39f0-4436-9e7a-5e65210e40fc-bluemix",
+        "password": "b606721d0c5c8c36f02cebd38ad445351ae6c92fb5859f39ebc89d4eab5e2496"
+    }
 }
