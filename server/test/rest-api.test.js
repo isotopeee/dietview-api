@@ -2,6 +2,7 @@
 /**
  * REST API Tests
  */
+/*
 var request = require('supertest');
 var app = require('../server');
 var assert = require('assert');
@@ -28,7 +29,7 @@ describe('REST', function() {
   /**
    * Expected Input Tests
    */
-
+/*
   describe('Expected Usage', function() {
 
     describe('GET /api/cars', function() {
@@ -201,3 +202,4 @@ describe('REST', function() {
   });
 
 });
+*/
