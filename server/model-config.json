@@ -15,20 +15,23 @@
     ]
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "cloudant",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "cloudant",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "cloudant",
     "public": false
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "cloudant",
     "public": false
+  },
+  "Email": {
+    "dataSource": "Email"  
   },
   "user": {
     "dataSource": "cloudant",
