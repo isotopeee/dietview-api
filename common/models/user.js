@@ -15,7 +15,6 @@ module.exports = function(User) {
           host: 'dietview-api.mybluemix.net',
           port: '443',
           protocol: 'https',
-          mailer: User.app.models.Email,
           redirect: 'https://dietview.mybluemix.net/#/'
         };
         
