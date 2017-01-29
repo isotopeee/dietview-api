@@ -24,8 +24,9 @@ module.exports = function(User) {
             if(err) {
                 User.deleteById(user.id);
                 return next(err);
-            } 
-            return next();
+            } else {
+                return next();
+            }
         });   
    });
 };
