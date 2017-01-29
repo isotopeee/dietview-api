@@ -15,7 +15,7 @@ module.exports = function(User) {
           host: 'dietview-api.mybluemix.net',
           port: '443',
           protocol: 'https',
-          redirect: 'https://dietview.mybluemix.net/#/'
+          redirect: 'https://dietview.mybluemix.net'
         };
         
         //send verification email
