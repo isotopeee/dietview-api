@@ -2,10 +2,14 @@
 
 module.exports = function(User) {
     
-   /* Remote Hooks */
+    var utils = require('../../node_modules/loopback/lib/utils.js');
+    var g = require('strong-globalize')();
+    
+    /*
+    /* Remote Hooks */
   
-  // create hook
-   User.afterRemote('create', function(context, user, next) {
+    // create hook
+    User.afterRemote('create', function(context, user, next) {
        var options = {
           type: 'email',
           to: user.email,
