@@ -41,7 +41,6 @@
   "scripts": {
     "test": "mocha -R spec server/test",
     "pretest": "jshint .",
-    "postinstall": "cd strong-resources && npm install",
     "start": "node ."
   }
 }
