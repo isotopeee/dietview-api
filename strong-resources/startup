@@ -1,6 +1,0 @@
-#!/bin/bash
-
-sleep 2
-sudo node node_modules/strong-start/bin/sl-start.js ./
-sleep 2 
-sudo node strong-resources/app.js
