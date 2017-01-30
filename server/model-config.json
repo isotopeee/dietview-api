@@ -31,7 +31,7 @@
     "public": false
   },
   "Email": {
-    "dataSource": "Email"  
+    "dataSource": "Email"
   },
   "user": {
     "dataSource": "cloudant",
@@ -41,5 +41,13 @@
       "realmRequired": true,
       "realmDelimiter": ":"
     }
+  },
+  "MealItem": {
+    "dataSource": "cloudant",
+    "public": true
+  },
+  "Meal": {
+    "dataSource": "cloudant",
+    "public": true
   }
 }
