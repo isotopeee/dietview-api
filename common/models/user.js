@@ -5,7 +5,65 @@ module.exports = function(User) {
     var utils = require('../../node_modules/loopback/lib/utils.js');
     var g = require('strong-globalize')();
     
-    /*
+    /* Static Methods */
+    
+    //changePassword handler
+    User.changePassword = function (body, fn) {
+        fn = fn || utils.createPromiseCallback();
+        
+        var accessToken = body.accessToken,
+            userId = body.userId,
+            password = body.password,
+            confirmation = body.confirmation;
+        
+        if (!accessToken || !userId) {
+            var err1 = new Error(g.f('Invalid Token'));
+            err1.statusCode = 400;
+            err1.code = 'INVALID_TOKEN';
+            return fn(err1);
+        }
+        
+        if (!password || 
+           !confirmation || 
+           password !== confirmation) {
+               var err2 = new Error(g.f('Password do not match'));
+               err2.statusCode = '400';
+               err2.code = 'PASSWORD_MISMATCH';
+        }
+        
+        User.findById(userId, function(err, user){
+            if (err) {
+                return fn(err);
+            }
+            
+            user.updateAttribute('password', password, function (err, user) {
+                if (err) {
+                    return fn(err);
+                }
+                //remove the token
+                var token = new User.app.models.AccessToken({id: accessToken});
+                token.destroy();
+                fn();                
+            });
+        });
+        
+        return fn.promise;
+    };
+    
+    /* Remote Methods */
+    
+    //changePassword
+    User.remoteMethod(
+        'changePassword',
+        {
+            description: 'change user password.',
+            accepts: [
+                {arg: 'body', type: 'object', required: true, http: {source: 'body'}}
+            ],
+            http: {verb: 'post', path: '/reset-password'}
+        }
+    )
+    
     /* Remote Hooks */
   
     // create hook
@@ -30,5 +88,27 @@ module.exports = function(User) {
             }
             return next();
         });   
-   });
+     });
+     
+    /* Event Handlers */
+    
+    //resetPasswordRequest event handler
+    User.on('resetPasswordRequest', function (info) {
+        var url = 'https://dietview.mybluemix.net/#/password-reset';
+        var html = 'Click <a href="' + url + '?access_token=' + info.accessToken.id +
+        '&user_id=' + info.accessToken.userId +
+        '">here </a> to reset your password';
+        
+        //send email
+        User.app.models.Email.send({
+            to: info.email,
+            from: info.email,
+            subject: 'Password reset',
+            html: html
+        }, function (err) {
+            if (err) {
+                return console.error('> error sending password reset email');
+            }
+        });
+    });
 };
