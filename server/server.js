@@ -6,6 +6,12 @@ var app = module.exports = loopback();
 // boot scripts mount components like REST API
 boot(app, __dirname);
 
+// configure middlewares
+
+var helmet = require('helmet');
+app.use(helmet());
+
+
 app.start = function() {
   // start the web server
   return app.listen(process.env.PORT || 3000, function() {
