@@ -4,6 +4,7 @@
   "idInjection": true,
   "options": {
     "validateUpsert": true
+    "injectOptionsFromRemoteContext": true
   },
   "properties": {
     "username": {
