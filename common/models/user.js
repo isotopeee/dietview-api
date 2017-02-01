@@ -29,6 +29,7 @@ module.exports = function(User) {
                var err2 = new Error(g.f('Password do not match'));
                err2.statusCode = '400';
                err2.code = 'PASSWORD_MISMATCH';
+               return fn(err2);
         }
         
         User.findById(userId, function(err, user){
