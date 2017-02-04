@@ -13,6 +13,7 @@
     "loopback": "^2.22.0",
     "loopback-boot": "^2.12.1",
     "loopback-component-explorer": "^2.1.0",
+    "loopback-component-storage": "^3.0.0",
     "loopback-connector-cloudant": "^1.1.0",
     "loopback-connector-rest": "^1.1.4",
     "loopback-datasource-juggler": "^2.0.0",
