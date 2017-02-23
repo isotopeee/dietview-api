@@ -49,13 +49,8 @@
     "remarks": {
       "type": "string"
     },
-    "thumbnail": {
+    "image": {
       "type": "string"
-    },
-    "images": {
-      "type": [
-        "string"
-      ]
     },
     "rating": {
       "type": "number",

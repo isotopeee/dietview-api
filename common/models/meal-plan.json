@@ -44,6 +44,9 @@
     "remarks": {
       "type": "string"
     },
+    "image": {
+      "type": "string"
+    },
     "rating": {
       "type": "number",
       "default": 0
