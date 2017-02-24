@@ -8,6 +8,7 @@
     "compression": "^1.0.3",
     "cors": "^2.7.1",
     "errorhandler": "^1.1.1",
+    "formidable": "^1.1.1",
     "function-rate-limit": "~0.0.1",
     "helmet": "^3.4.0",
     "loopback": "^2.22.0",
