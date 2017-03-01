@@ -1,42 +1,41 @@
 'use strict';
 
 module.exports = function(User) {
-    
     var utils = require('../../node_modules/loopback/lib/utils.js');
     var g = require('strong-globalize')();
-    
+
     /* Static Methods */
-    
+
     //changePassword handler
     User.changePassword = function (body, fn) {
         fn = fn || utils.createPromiseCallback();
-        
+
         var accessToken = body.accessToken,
             userId = body.userId,
             password = body.password,
             confirmation = body.confirmation;
-        
+
         if (!accessToken || !userId) {
             var err1 = new Error(g.f('Invalid Token'));
             err1.statusCode = 400;
             err1.code = 'INVALID_TOKEN';
             return fn(err1);
         }
-        
-        if (!password || 
-           !confirmation || 
+
+        if (!password ||
+           !confirmation ||
            password !== confirmation) {
                var err2 = new Error(g.f('Password do not match'));
                err2.statusCode = '400';
                err2.code = 'PASSWORD_MISMATCH';
                return fn(err2);
         }
-        
+
         User.findById(userId, function(err, user){
             if (err) {
                 return fn(err);
             }
-            
+
             user.updateAttribute('password', password, function (err, user) {
                 if (err) {
                     return fn(err);
@@ -44,15 +43,15 @@ module.exports = function(User) {
                 //remove the token
                 var token = new User.app.models.AccessToken({id: accessToken});
                 token.destroy();
-                fn();                
+                fn();
             });
         });
-        
+
         return fn.promise;
     };
-    
+
     /* Remote Methods */
-    
+
     //changePassword
     User.remoteMethod(
         'changePassword',
@@ -61,12 +60,12 @@ module.exports = function(User) {
             accepts: [
                 {arg: 'body', type: 'object', required: true, http: {source: 'body'}}
             ],
-            http: {verb: 'post', path: '/reset-password'}
+            http: {verb: 'post', path: '/reset-password', status: '200'}
         }
     )
-    
+
     /* Remote Hooks */
-  
+
     // create hook
     User.afterRemote('create', function(context, user, next) {
        var options = {
@@ -80,7 +79,7 @@ module.exports = function(User) {
           protocol: 'https',
           redirect: 'https://dietview.mybluemix.net'
         };
-        
+
         //send verification email
         user.verify(options, function(err) {
             if(err) {
@@ -88,18 +87,18 @@ module.exports = function(User) {
                 return next(err);
             }
             return next();
-        });   
+        });
      });
-     
+
     /* Event Handlers */
-    
+
     //resetPasswordRequest event handler
     User.on('resetPasswordRequest', function (info) {
         var url = 'https://dietview.mybluemix.net/#/password-reset';
         var html = 'Click <a href="' + url + '?access_token=' + info.accessToken.id +
         '&user_id=' + info.accessToken.userId +
         '">here </a> to reset your password';
-        
+
         //send email
         User.app.models.Email.send({
             to: info.email,

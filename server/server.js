@@ -3,14 +3,16 @@ var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
 
-// boot scripts mount components like REST API
-boot(app, __dirname);
-
 // configure middlewares
 
 var helmet = require('helmet');
+var bodyParser = require('body-parser');
 app.use(helmet());
+app.use(bodyParser.json()); // parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+// boot scripts mount components like REST API
+boot(app, __dirname);
 
 app.start = function() {
   // start the web server
