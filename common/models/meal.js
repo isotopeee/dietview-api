@@ -16,12 +16,26 @@ module.exports = function(Meal) {
     fn = fn || utils.createPromiseCallback();
 
     var form = new formidable.IncomingForm();
+
     form.uploadDir = '/temp';
+
+    form.on('file', function(name, file) {
+      console.log('File received.');
+      console.log(name);
+      console.log(file);
+    });
+
+    form.on('field', function (name, file) {
+      console.log('Field received.');
+      console.log(name);
+      console.log(file);
+    });
+
     var dbx = new Dropbox({ accessToken: 'zkRM0L0OfnAAAAAAAAAAJ40hAaWmGQlhKpyw-v6S6UncQfxzhQ6sAugQ07zIsGm5'});
     form.parse(req, function (err, fields, files) {
       dbx.filesUpload({
         path: '/',
-        contents: files
+        contents: fields
       }).then(function (response) {
         fn();
       }).catch(function (err) {
@@ -41,7 +55,7 @@ module.exports = function(Meal) {
     {
       description: 'upload meal image',
       accepts: [
-        {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       http: {verb: 'post', path: '/upload', status: '200'}
     }
