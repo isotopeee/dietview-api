@@ -26,9 +26,15 @@
     }
   },
   "files": {
-    "serve-static": {
+    "serve-static": [{
       "params": "$!../client"
-    }
+    }, {
+      "name": "uploads",
+      "paths": [
+        "/uploads"
+      ],
+      "params": "$!../uploads"
+    }]
   },
   "final": {
     "loopback#urlNotFound": {}
