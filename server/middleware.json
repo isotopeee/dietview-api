@@ -7,7 +7,6 @@
     "cors": {
       "params": {
         "origin": true,
-        "credentials": true,
         "maxAge": 86400
       }
     }

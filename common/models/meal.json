@@ -58,6 +58,10 @@
     },
     "status": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "required": true
     }
   },
   "validations": [],
