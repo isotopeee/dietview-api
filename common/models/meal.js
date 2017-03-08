@@ -1,68 +1,140 @@
 'use strict';
 
 module.exports = function(Meal) {
-  var g = require('strong-globalize')();
-  var utils = require('../../node_modules/loopback/lib/utils.js');
+    var g = require('strong-globalize')();
+    var utils = require('../../node_modules/loopback/lib/utils.js');
 
-  var path = require('path');
-  var formidable = require('formidable');
-  var fs = require('fs');
+    var path = require('path');
+    var formidable = require('formidable');
+    var fs = require('fs');
 
-  /* Static Methods */
+    // get reference to the app object
+    var app = require('../../server/server');
 
-  // upload image handler
-  Meal.upload = function (req, fn) {
-    fn = fn || utils.createPromiseCallback();
+    /* Static Methods */
 
-    var form = new formidable.IncomingForm();
+    // upload image handler
+    Meal.upload = function(req, fn) {
+        fn = fn || utils.createPromiseCallback();
 
-    form.uploadDir = './uploads/images/meals';
+        var form = new formidable.IncomingForm();
 
-    var new_path = '';
+        form.uploadDir = './uploads/images/meals';
 
-    form.on('file', function(name, file) {
-      var name = file.name;
-      name = name.slice(0, name.lastIndexOf('.'));
-      name = name + '-' + new Date().toJSON() + '.jpg';
-      name = name.replace(':', '');
-      name = name.replace(':', '');
-      new_path = path.join(form.uploadDir, name);
+        var new_path = '';
 
-      fs.rename(file.path, new_path);
+        form.on('file', function(name, file) {
+            var name = file.name;
+            name = name.slice(0, name.lastIndexOf('.'));
+            name = name + '-' + new Date().toJSON() + '.jpg';
+            name = name.replace(':', '');
+            name = name.replace(':', '');
+            new_path = path.join(form.uploadDir, name);
+
+            fs.rename(file.path, new_path);
+        });
+
+        form.on('field', function(name, value) {
+            console.log('Field received.');
+        });
+
+        form.parse(req, function(err, fields, files) {
+            if (err) {
+                console.log('Upload failed.');
+                var error = new Error(g.f('File upload failed.'));
+                error.statusCode = 400;
+                error.code = 'FILE_UPLOAD_FAILED';
+                return fn(error);
+            } else {
+                console.log('Upload success.');
+                fn(null, new_path);
+            }
+        });
+
+        return fn.promise;
+    };
+
+    /* Remote Methods */
+
+    Meal.remoteMethod(
+        'upload', {
+            description: 'upload meal image',
+            accepts: [{
+                arg: 'req',
+                type: 'object',
+                http: {
+                    source: 'req'
+                }
+            }],
+            returns: [{
+                arg: 'path',
+                type: 'string'
+            }],
+            http: {
+                verb: 'post',
+                path: '/upload',
+                status: '200'
+            }
+        }
+    );
+
+    /* Remote Hooks */
+
+    Meal.afterRemote('create', function(ctx, meal, next) {
+        // get reference to MealItem model
+        var MealItem = app.models.MealItem;
+        for (var i = 0; i < meal.mealItems.length; i++) {
+            MealItem.findById(meal.mealItems[i].id, function(err, mealItem) {
+                if (err) {
+                    console.error(err);
+                }
+                var meals = mealItem.meals;
+                if (meals) {
+                    meals.push(meal.id);
+                } else {
+                    meals = [meal.id];
+                }
+                mealItem.updateAttributes({
+                    meals: meals
+                }, function(err, mealItem) {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            });
+        }
+        next();
     });
 
-    form.on('field', function (name, value) {
-      console.log('Field received.');
+    /* Operation Hooks */
+
+    Meal.observe('before delete', function(ctx, next) {
+        var MealItem = app.models.MealItem;
+        var mealId = ctx.where.id;
+        // retrieve meal record to be deleted
+        Meal.findById(mealId, function (err, meal) {
+            for (var i = 0; i < meal.mealItems.length; i++) {
+                // retrieve meal item records
+                MealItem.findById(meal.mealItems[i].id, function (err, mealItem) {
+                    // get index of mealId to be deleted
+                    var mealIndex = mealItem.meals.indexOf(mealId);
+                    mealItem.meals.splice(mealIndex, 1);
+                    mealItem.updateAttributes({
+                        meals: mealItem.meals
+                    }, function (err, mealItem) {
+                        if (err) {
+                            console.error(err);
+                        }
+                        mealItem.save(function (err, obj) {
+                            if (err) {
+                                console.error(err);
+                            }
+                            // TODO: delete image from ./uploads folder
+                        });
+                    });
+                });
+            }
+        });
+        next();
     });
-
-    form.parse(req, function (err, fields, files) {
-      if (err) {
-        console.log('Upload failed.');
-        var error = new Error(g.f('File upload failed.'));
-        error.statusCode = 400;
-        error.code = 'FILE_UPLOAD_FAILED';
-        return fn(error);
-      } else {
-        console.log('Upload success.');
-        fn(null, new_path);
-      }
-    });
-
-    return fn.promise;
-  };
-
-  /* Remote Methods */
-  Meal.remoteMethod(
-    'upload',
-    {
-      description: 'upload meal image',
-      accepts: [
-        {arg: 'req', type: 'object', http: {source: 'req'}}
-      ],
-      returns: [
-        {arg: 'path', type: 'string'}
-      ],
-      http: {verb: 'post', path: '/upload', status: '200'}
-    }
-  )
 };

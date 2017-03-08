@@ -62,7 +62,7 @@ module.exports = function(User) {
             ],
             http: {verb: 'post', path: '/reset-password', status: '200'}
         }
-    )
+    );
 
     /* Remote Hooks */
 
