@@ -28,9 +28,6 @@
         "object"
       ]
     },
-    "vitals": {
-      "type": "object"
-    },
     "activeSubscription": {
       "type": "object"
     },
