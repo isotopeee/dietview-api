@@ -58,7 +58,7 @@ module.exports = function(Meal) {
 
     Meal.remoteMethod(
         'upload', {
-            description: 'upload meal image',
+            description: 'Upload meal image',
             accepts: [{
                 arg: 'req',
                 type: 'object',
@@ -83,7 +83,14 @@ module.exports = function(Meal) {
     Meal.afterRemote('create', function(ctx, meal, next) {
         // get reference to MealItem model
         var MealItem = app.models.MealItem;
+
         for (var i = 0; i < meal.mealItems.length; i++) {
+            meal.mealItems[i].meals = undefined;
+            meal.save(function (err, obj) {
+                if (err) {
+                    console.error(err);
+                }
+            });
             MealItem.findById(meal.mealItems[i].id, function(err, mealItem) {
                 if (err) {
                     console.error(err);
@@ -112,20 +119,20 @@ module.exports = function(Meal) {
         var MealItem = app.models.MealItem;
         var mealId = ctx.where.id;
         // retrieve meal record to be deleted
-        Meal.findById(mealId, function (err, meal) {
+        Meal.findById(mealId, function(err, meal) {
             for (var i = 0; i < meal.mealItems.length; i++) {
                 // retrieve meal item records
-                MealItem.findById(meal.mealItems[i].id, function (err, mealItem) {
+                MealItem.findById(meal.mealItems[i].id, function(err, mealItem) {
                     // get index of mealId to be deleted
                     var mealIndex = mealItem.meals.indexOf(mealId);
                     mealItem.meals.splice(mealIndex, 1);
                     mealItem.updateAttributes({
                         meals: mealItem.meals
-                    }, function (err, mealItem) {
+                    }, function(err, mealItem) {
                         if (err) {
                             console.error(err);
                         }
-                        mealItem.save(function (err, obj) {
+                        mealItem.save(function(err, obj) {
                             if (err) {
                                 console.error(err);
                             }
