@@ -54,34 +54,34 @@ module.exports = function(MealPlan) {
         return fn.promise;
     };
 
-    MealPlan.recommendations = function (body, fn) {
+    MealPlan.recommendations = function(req, fn) {
         var User = app.models.User;
-        var userId = body.userId;
-        User.findById(userId, function (err, user) {
-             var age = (new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear());
-             var weight = user.account.vitals.weight / 2.2;
-             var height = ((user.account.feet * 12) + user.account.inches) * 0.0254;
-             var gender = user.account.profile.gender;
-             var EER = 0;
-             if (gender === 'male') {
-                 EER = 662 - (9.53 * age) + 1.8 * ((15.91 * weight) + (539.6 * height));
-             } else if (gender === 'female') {
-                 EER = 354 - (6.91 * age) + 1.8 * ((9.36 * weight) + (726 * height));
-             }
+        var userId = req.params.userId;
+        User.findById(userId, function(err, user) {
+            var age = (new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear());
+            var weight = user.account.vitals.weight / 2.2;
+            var height = ((user.account.feet * 12) + user.account.inches) * 0.0254;
+            var gender = user.account.profile.gender;
+            var EER = 0;
+            if (gender === 'male') {
+                EER = 662 - (9.53 * age) + 1.8 * ((15.91 * weight) + (539.6 * height));
+            } else if (gender === 'female') {
+                EER = 354 - (6.91 * age) + 1.8 * ((9.36 * weight) + (726 * height));
+            }
 
-             var recommendations = [];
-             MealPlan.find(function (err, mealPlans) {
+            var recommendations = [];
+            MealPlan.find(function(err, mealPlans) {
                 for (var i = 0; i < mealPlans.length; i++) {
-                    var margin = mealPlans[i].averageCalories *.05;
+                    var margin = mealPlans[i].averageCalories * .05;
                     var min = mealPlans[i].averageCalories - margin,
                         max = mealPlans[i].averageCalories + margin;
                     if (min < ERR && ERR < max) {
                         recommendations.push(mealPlans);
                     }
                 }
-             });
+            });
 
-             fn(null, recommendations);
+            fn(null, recommendations);
         });
     };
 
@@ -91,8 +91,11 @@ module.exports = function(MealPlan) {
         'upload', {
             description: 'upload meal plan image',
             accepts: [{
-                arg: 'userId',
-                type: 'string'
+                arg: 'req',
+                type: 'object',
+                http: {
+                    source: 'req'
+                }
             }],
             returns: [{
                 arg: 'path',
@@ -144,10 +147,10 @@ module.exports = function(MealPlan) {
             if (!mealIds.includes(mealPlan.meals[i].dinner.id)) {
                 mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
             }
-            if(mealPlan.meals[i].hasOwnProperty('snack')) {
-              if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
-                  mealIds = mealIds.push(mealPlan.meals[i].snack.id)
-              }
+            if (mealPlan.meals[i].hasOwnProperty('snack')) {
+                if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
+                    mealIds = mealIds.push(mealPlan.meals[i].snack.id)
+                }
             }
 
             for (var i = 0; i < mealIds.length; i++) {
@@ -198,10 +201,10 @@ module.exports = function(MealPlan) {
                 if (!mealIds.includes(mealPlan.meals[i].dinner.id)) {
                     mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
                 }
-                if(mealPlan.meals[i].hasOwnProperty('snack')) {
-                  if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
-                      mealIds = mealIds.push(mealPlan.meals[i].snack.id)
-                  }
+                if (mealPlan.meals[i].hasOwnProperty('snack')) {
+                    if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
+                        mealIds = mealIds.push(mealPlan.meals[i].snack.id)
+                    }
                 }
                 for (var i = 0; i < mealIds.length; i++) {
                     // retrieve meal records

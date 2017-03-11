@@ -3746,7 +3746,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' &&
              *
              * @param {Object} postData Request data.
              *
-             *  - `userId` – `{string=}` -
+             *  - `req` – `{object=}` -
              *
              * @param {function(Object,Object)=} successCb
              *   Success callback with two arguments: `value`, `responseHeaders`.
