@@ -56,7 +56,7 @@ module.exports = function(MealPlan) {
 
     MealPlan.recommendations = function(req, fn) {
         var User = app.models.User;
-        var userId = req.params.userId;
+        var userId = req.query.userId;
         User.findById(userId, function(err, user) {
             var age = (new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear());
             var weight = user.account.vitals.weight / 2.2;
@@ -116,7 +116,7 @@ module.exports = function(MealPlan) {
                 arg: 'req',
                 type: 'object',
                 http: {
-                    source: 'body'
+                    source: 'req'
                 }
             }],
             returns: [{
