@@ -29,7 +29,7 @@
       "type": "string",
       "required": true
     },
-    "calories": {
+    "averageCalories": {
       "type": "number",
       "required": true
     },

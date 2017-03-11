@@ -54,8 +54,9 @@ module.exports = function(MealPlan) {
         return fn.promise;
     };
 
-    MealPlan.recommendations = function (req, fn) {
+    MealPlan.recommendations = function (body, fn) {
         var User = app.models.User;
+        var userId = body.userId;
         User.findById(userId, function (err, user) {
              var age = (new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear());
              var weight = user.account.vitals.weight / 2.2;
@@ -112,7 +113,7 @@ module.exports = function(MealPlan) {
                 arg: 'req',
                 type: 'object',
                 http: {
-                    source: 'req'
+                    source: 'body'
                 }
             }],
             returns: [{
@@ -133,29 +134,48 @@ module.exports = function(MealPlan) {
         // get reference to Meal model
         var Meal = app.models.Meal;
         for (var i = 0; i < mealPlan.meals.length; i++) {
-            Meal.findById(mealPlan.meals[i].id, function(err, meal) {
-                if (err) {
-                    console.error(err);
-                }
-                var mealPlans = meal.mealPlans;
-                var mp = {
-                    id: mealPlan.id,
-                    code: mealPlan.code,
-                    name: mealPlan.name
-                };
-                if (mealPlans) {
-                    mealPlans.push(mp);
-                } else {
-                    mealPlans = [mp];
-                }
-                meal.updateAttributes({
-                    mealPlans: mealPlans
-                }, function(err, meal) {
+            var mealIds = [];
+            if (!mealIds.includes(mealPlan.meals[i].breakfast.id)) {
+                mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+            }
+            if (!mealIds.includes(mealPlan.meals[i].lunch.id)) {
+                mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+            }
+            if (!mealIds.includes(mealPlan.meals[i].dinner.id)) {
+                mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+            }
+            if(mealPlan.meals[i].hasOwnProperty('snack')) {
+              if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
+                  mealIds = mealIds.push(mealPlan.meals[i].snack.id)
+              }
+            }
+
+            for (var i = 0; i < mealIds.length; i++) {
+                Meal.findById(mealIds[i], function(err, meal) {
                     if (err) {
                         console.error(err);
                     }
+                    var mealPlans = meal.mealPlans;
+                    var mp = {
+                        id: mealPlan.id,
+                        code: mealPlan.code,
+                        name: mealPlan.name,
+                        type: mealPlan.type
+                    };
+                    if (mealPlans) {
+                        mealPlans.push(mp);
+                    } else {
+                        mealPlans = [mp];
+                    }
+                    meal.updateAttributes({
+                        mealPlans: mealPlans
+                    }, function(err, meal) {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
                 });
-            });
+            }
         }
         next();
     });
@@ -168,31 +188,48 @@ module.exports = function(MealPlan) {
         // retrieve meal plan record to be deleted
         MealPlan.findById(mealPlanId, function(err, mealPlan) {
             for (var i = 0; i < mealPlan.meals.length; i++) {
-                // retrieve meal records
-                Meal.findById(mealPlan.meals[i].id, function(err, meal) {
-                    // get index of mealPlanId to be deleted
-                    var mealPlanIndex = 0;
-                    for (var i = 0; i < meal.mealPlans.length; i++) {
-                        if (mealPlanId === meal.mealPlans[i].id) {
-                            mealPlanIndex = i;
-                            break;
+                var mealIds = [];
+                if (!mealIds.includes(mealPlan.meals[i].breakfast.id)) {
+                    mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                }
+                if (!mealIds.includes(mealPlan.meals[i].lunch.id)) {
+                    mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                }
+                if (!mealIds.includes(mealPlan.meals[i].dinner.id)) {
+                    mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                }
+                if(mealPlan.meals[i].hasOwnProperty('snack')) {
+                  if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
+                      mealIds = mealIds.push(mealPlan.meals[i].snack.id)
+                  }
+                }
+                for (var i = 0; i < mealIds.length; i++) {
+                    // retrieve meal records
+                    Meal.findById(mealIds[i], function(err, meal) {
+                        // get index of mealPlanId to be deleted
+                        var mealPlanIndex = 0;
+                        for (var i = 0; i < meal.mealPlans.length; i++) {
+                            if (mealPlanId === meal.mealPlans[i].id) {
+                                mealPlanIndex = i;
+                                break;
+                            }
                         }
-                    }
-                    meal.mealPlans.splice(mealIndex, 1);
-                    meal.updateAttributes({
-                        mealPlans: meal.mealPlans
-                    }, function(err, meal) {
-                        if (err) {
-                            console.error(err);
-                        }
-                        meal.save(function(err, obj) {
+                        meal.mealPlans.splice(mealIndex, 1);
+                        meal.updateAttributes({
+                            mealPlans: meal.mealPlans
+                        }, function(err, meal) {
                             if (err) {
                                 console.error(err);
                             }
-                            // TODO: delete image from ./uploads folder
+                            meal.save(function(err, obj) {
+                                if (err) {
+                                    console.error(err);
+                                }
+                                // TODO: delete image from ./uploads folder
+                            });
                         });
                     });
-                });
+                }
             }
         });
         next();
