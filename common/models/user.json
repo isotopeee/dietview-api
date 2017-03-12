@@ -87,6 +87,13 @@
       "principalId": "$unauthenticated",
       "permission": "ALLOW",
       "property": "findOne"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "ALLOW",
+      "property": "deleteById"
     }
   ],
   "methods": {}
