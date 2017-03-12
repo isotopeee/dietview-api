@@ -80,6 +80,13 @@
       "principalId": "$unauthenticated",
       "permission": "ALLOW",
       "property": "findById"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "ALLOW",
+      "property": "findOne"
     }
   ],
   "methods": {}
