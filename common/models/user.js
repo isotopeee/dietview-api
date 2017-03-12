@@ -75,6 +75,7 @@ module.exports = function(User) {
           subject: 'Thank you for signing up',
           user: User,
           host: 'dietview-api.mybluemix.net',
+          port: '443',
           protocol: 'https',
           redirect: 'https://dietview.mybluemix.net'
         };
