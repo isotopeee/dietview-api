@@ -21,6 +21,9 @@
         "auth": {
           "user": "dietviewph@gmail.com",
           "pass": "dietviewph"
+        },
+        "tls": {
+          "rejectUnauthorized": false
         }
       }
     ]
