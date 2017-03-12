@@ -68,6 +68,7 @@ module.exports = function(MealPlan) {
             } else if (gender === 'female') {
                 EER = 354 - (6.91 * age) + 1.8 * ((9.36 * weight) + (726 * height));
             }
+
             var recommendations = [];
             MealPlan.find(function(err, mealPlans) {
                 for (var i = 0; i < mealPlans.length; i++) {
@@ -216,7 +217,7 @@ module.exports = function(MealPlan) {
                                 break;
                             }
                         }
-                        meal.mealPlans.splice(mealIndex, 1);
+                        meal.mealPlans.splice(mealPlanIndex, 1);
                         meal.updateAttributes({
                             mealPlans: meal.mealPlans
                         }, function(err, meal) {

@@ -53,5 +53,9 @@
   "MealPlan": {
     "dataSource": "cloudant",
     "public": true
+  },
+  "Subscription": {
+    "dataSource": "cloudant",
+    "public": true
   }
 }

@@ -1,0 +1,42 @@
+{
+  "name": "Subscription",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "customer": {
+      "type": "object",
+      "required": true
+    },
+    "paymentDetails": {
+      "type": "object",
+      "required": true
+    },
+    "subscriptionDate": {
+      "type": "date"
+    },
+    "startDate": {
+      "type": "date",
+      "required": true
+    },
+    "endDate": {
+      "type": "date",
+      "required": true
+    },
+    "type": {
+      "type": "string"
+    },
+    "remarks": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

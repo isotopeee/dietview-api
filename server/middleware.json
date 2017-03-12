@@ -16,7 +16,11 @@
   "auth": {},
   "parse": {
     "body-parser#json": {},
-    "body-parser#urlencoded": {"params": { "extended": true }}
+    "body-parser#urlencoded": {
+      "params": {
+        "extended": true
+      }
+    }
   },
   "routes": {
     "loopback#rest": {
@@ -26,15 +30,17 @@
     }
   },
   "files": {
-    "serve-static": [{
-      "params": "$!../client"
-    }, {
-      "name": "uploads",
-      "paths": [
-        "/uploads"
-      ],
-      "params": "$!../uploads"
-    }]
+    "serve-static": [
+      {
+        "params": "$!../client"
+      },
+      {
+        "paths": [
+          "/uploads"
+        ],
+        "params": "$!../uploads"
+      }
+    ]
   },
   "final": {
     "loopback#urlNotFound": {}
