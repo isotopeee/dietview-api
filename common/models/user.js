@@ -7,7 +7,7 @@ module.exports = function(User) {
     /* Static Methods */
 
     //changePassword handler
-    User.changePassword = function (body, fn) {
+    User.changePassword = function(body, fn) {
         fn = fn || utils.createPromiseCallback();
 
         var accessToken = body.accessToken,
@@ -23,25 +23,27 @@ module.exports = function(User) {
         }
 
         if (!password ||
-           !confirmation ||
-           password !== confirmation) {
-               var err2 = new Error(g.f('Password do not match'));
-               err2.statusCode = '400';
-               err2.code = 'PASSWORD_MISMATCH';
-               return fn(err2);
+            !confirmation ||
+            password !== confirmation) {
+            var err2 = new Error(g.f('Password do not match'));
+            err2.statusCode = '400';
+            err2.code = 'PASSWORD_MISMATCH';
+            return fn(err2);
         }
 
-        User.findById(userId, function(err, user){
+        User.findById(userId, function(err, user) {
             if (err) {
                 return fn(err);
             }
 
-            user.updateAttribute('password', password, function (err, user) {
+            user.updateAttribute('password', password, function(err, user) {
                 if (err) {
                     return fn(err);
                 }
                 //remove the token
-                var token = new User.app.models.AccessToken({id: accessToken});
+                var token = new User.app.models.AccessToken({
+                    id: accessToken
+                });
                 token.destroy();
                 fn();
             });
@@ -54,13 +56,21 @@ module.exports = function(User) {
 
     //changePassword
     User.remoteMethod(
-        'changePassword',
-        {
+        'changePassword', {
             description: 'change user password.',
-            accepts: [
-                {arg: 'body', type: 'object', required: true, http: {source: 'body'}}
-            ],
-            http: {verb: 'post', path: '/reset-password', status: '200'}
+            accepts: [{
+                arg: 'body',
+                type: 'object',
+                required: true,
+                http: {
+                    source: 'body'
+                }
+            }],
+            http: {
+                verb: 'post',
+                path: '/reset-password',
+                status: '200'
+            }
         }
     );
 
@@ -68,36 +78,44 @@ module.exports = function(User) {
 
     // create hook
     User.afterRemote('create', function(context, user, next) {
-       var options = {
-          type: 'email',
-          to: user.email,
-          from: 'dietviewph@gmail.com',
-          subject: 'Thank you for signing up',
-          user: User,
-          host: 'dietview-api.mybluemix.net',
-          port: '443',
-          protocol: 'https',
-          redirect: 'https://dietview.mybluemix.net'
-        };
 
-        //send verification email
-        user.verify(options, function(err) {
-            if(err) {
-                User.deleteById(user.id);
-                return next(err);
+        if (user.account.hasOwnProperty('social')) {
+            if (user.account.social.hasOwnProperty('facebook')) {
+                // do nothing
             }
-            return next();
-        });
-     });
+        } else {
+            var options = {
+                type: 'email',
+                to: user.email,
+                from: 'dietviewph@gmail.com',
+                subject: 'Thank you for signing up',
+                user: User,
+                host: 'dietview-api.mybluemix.net',
+                port: '443',
+                protocol: 'https',
+                redirect: 'https://dietview.mybluemix.net'
+            };
+
+            //send verification email
+            user.verify(options, function(err) {
+                if (err) {
+                    User.deleteById(user.id);
+                    return next(err);
+                }
+
+            });
+        }
+        return next();
+    });
 
     /* Event Handlers */
 
     //resetPasswordRequest event handler
-    User.on('resetPasswordRequest', function (info) {
+    User.on('resetPasswordRequest', function(info) {
         var url = 'https://dietview.mybluemix.net/#/password-reset';
         var html = 'Click <a href="' + url + '?access_token=' + info.accessToken.id +
-        '&user_id=' + info.accessToken.userId +
-        '">here </a> to reset your password';
+            '&user_id=' + info.accessToken.userId +
+            '">here </a> to reset your password';
 
         //send email
         User.app.models.Email.send({
@@ -105,7 +123,7 @@ module.exports = function(User) {
             from: info.email,
             subject: 'Password reset',
             html: html
-        }, function (err) {
+        }, function(err) {
             if (err) {
                 return console.error('> error sending password reset email');
             }
