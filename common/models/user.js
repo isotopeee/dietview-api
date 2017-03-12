@@ -78,10 +78,20 @@ module.exports = function(User) {
 
     // create hook
     User.afterRemote('create', function(context, user, next) {
-
         if (user.account.hasOwnProperty('social')) {
             if (user.account.social.hasOwnProperty('facebook')) {
-                // do nothing
+                user.updateAttributes({
+                    emailVerified: true
+                }, function (err, user) {
+                    if (err) {
+                        return next(err);
+                    }
+                    user.save(function (err, obj) {
+                        if (err) {
+                            return next(err);
+                        }
+                    });
+                });
             }
         } else {
             var options = {
