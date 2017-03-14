@@ -57,5 +57,9 @@
   "Subscription": {
     "dataSource": "cloudant",
     "public": true
+  },
+  "Message": {
+    "dataSource": "cloudant",
+    "public": true
   }
 }

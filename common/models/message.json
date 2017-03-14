@@ -1,41 +1,38 @@
 {
-  "name": "Subscription",
+  "name": "Message",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "customer": {
+    "sender": {
       "type": "object",
       "required": true
     },
-    "paymentDetails": {
+    "receiver": {
       "type": "object",
       "required": true
     },
-    "subscriptionDate": {
-      "type": "date"
-    },
-    "startDate": {
-      "type": "date",
+    "body": {
+      "type": "string",
       "required": true
-    },
-    "endDate": {
-      "type": "date",
-      "required": true
-    },
-    "type": {
-      "type": "string"
-    },
-    "remarks": {
-      "type": "string"
     },
     "status": {
       "type": "string"
     },
-    "isActive": {
+    "isRead": {
       "type": "boolean"
+    },
+    "isArchive": {
+      "type": "boolean"
+    },
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "created": {
+      "type": "date"
     }
   },
   "validations": [],

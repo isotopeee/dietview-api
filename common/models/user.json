@@ -23,19 +23,6 @@
       "type": "object",
       "required": true
     },
-    "messages": {
-      "type": [
-        "object"
-      ]
-    },
-    "activeSubscription": {
-      "type": "object"
-    },
-    "subscriptions": {
-      "type": [
-        "object"
-      ]
-    },
     "created": {
       "type": "date"
     },
@@ -48,9 +35,14 @@
   },
   "validations": [],
   "relations": {
-    "users": {
+    "messages": {
       "type": "hasMany",
-      "model": "user",
+      "model": "Message",
+      "foreignKey": ""
+    },
+    "subscriptions": {
+      "type": "hasMany",
+      "model": "Subscription",
       "foreignKey": ""
     }
   },
