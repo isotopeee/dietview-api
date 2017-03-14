@@ -55,6 +55,8 @@ module.exports = function(MealPlan) {
     };
 
     MealPlan.recommendations = function(req, fn) {
+      fn = fn || utils.createPromiseCallback();
+      
         var User = app.models.User;
         var userId = req.query.userId;
         User.findById(userId, function(err, user) {
