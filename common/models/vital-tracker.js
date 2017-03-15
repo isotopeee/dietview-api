@@ -11,12 +11,10 @@ module.exports = function(VitalTracker) {
 
   VitalTracker.eer = function (req, fn) {
     fn = fn || utils.createPromiseCallback();
-
-        var User = app.models.User;
-
+        req.query.height = JSON.parse(req.query.height);
         var age = req.query.age;
         var weight = req.query.weight / 2.2;
-        var height = ((req.query.height.feet * 12) + req.query.height.inches) * 0.0254;
+        var height = (((req.query.height.feet * 12) + req.query.height.inches) * 0.0254);
         var gender = req.query.gender;
         var exerciseLevel = req.query.exerciseLevel;
         var EER = 0;
@@ -25,7 +23,7 @@ module.exports = function(VitalTracker) {
         } else if (gender === 'female') {
             EER = 354 - (6.91 * age) + exerciseLevel * ((9.36 * weight) + (726 * height));
         }
-
+        EER = EER.toFixed(2);
         fn(null, EER);
   };
 

@@ -55,8 +55,8 @@ module.exports = function(MealPlan) {
     };
 
     MealPlan.recommendations = function(req, fn) {
-      fn = fn || utils.createPromiseCallback();
-      
+        fn = fn || utils.createPromiseCallback();
+
         var User = app.models.User;
         var userId = req.query.userId;
         User.findById(userId, function(err, user) {
@@ -77,7 +77,7 @@ module.exports = function(MealPlan) {
                     var margin = mealPlans[i].averageCalories * .05;
                     var min = mealPlans[i].averageCalories - margin,
                         max = mealPlans[i].averageCalories + margin;
-                    if (min < ERR && ERR < max) {
+                    if (min < EER && EER < max) {
                         recommendations.push(mealPlans);
                     }
                 }
@@ -138,49 +138,54 @@ module.exports = function(MealPlan) {
     MealPlan.afterRemote('create', function(ctx, mealPlan, next) {
         // get reference to Meal model
         var Meal = app.models.Meal;
+        var mealIds = [];
+        //remove duplicate meaLIds in mealPlan.meals
         for (var i = 0; i < mealPlan.meals.length; i++) {
-            var mealIds = [];
             if (!mealIds.includes(mealPlan.meals[i].breakfast.id)) {
-                mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                mealIds.push(mealPlan.meals[i].breakfast.id)
             }
             if (!mealIds.includes(mealPlan.meals[i].lunch.id)) {
-                mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                mealIds.push(mealPlan.meals[i].lunch.id)
             }
             if (!mealIds.includes(mealPlan.meals[i].dinner.id)) {
-                mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                mealIds.push(mealPlan.meals[i].dinner.id)
             }
             if (mealPlan.meals[i].hasOwnProperty('snack')) {
-                if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
-                    mealIds = mealIds.push(mealPlan.meals[i].snack.id)
+                if (mealPlan.meals[i].snack.hasOwnProperty('id')) {
+                    if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
+                        mealIds.push(mealPlan.meals[i].snack.id)
+                    }
                 }
             }
-
-            for (var i = 0; i < mealIds.length; i++) {
-                Meal.findById(mealIds[i], function(err, meal) {
+        }
+        for (var i = 0; i < mealIds.length; i++) {
+            Meal.findById(mealIds[i], function(err, meal) {
+                if (err) {
+                    console.error(err);
+                }
+                var mealPlans = meal.mealPlans;
+                var mp = {
+                    id: mealPlan.id,
+                    code: mealPlan.code,
+                    name: mealPlan.name,
+                    type: mealPlan.type
+                };
+                if (mealPlans) {
+                    mealPlans.push(mp);
+                } else {
+                    mealPlans = [mp];
+                }
+                meal.updateAttributes({
+                    mealPlans: mealPlans
+                }, function(err, meal) {
                     if (err) {
                         console.error(err);
                     }
-                    var mealPlans = meal.mealPlans;
-                    var mp = {
-                        id: mealPlan.id,
-                        code: mealPlan.code,
-                        name: mealPlan.name,
-                        type: mealPlan.type
-                    };
-                    if (mealPlans) {
-                        mealPlans.push(mp);
-                    } else {
-                        mealPlans = [mp];
-                    }
-                    meal.updateAttributes({
-                        mealPlans: mealPlans
-                    }, function(err, meal) {
-                        if (err) {
-                            console.error(err);
-                        }
+                    meal.save(function (err) {
+                        console.error(err);
                     });
                 });
-            }
+            });
         }
         next();
     });
@@ -192,49 +197,52 @@ module.exports = function(MealPlan) {
         var mealPlanId = ctx.where.id;
         // retrieve meal plan record to be deleted
         MealPlan.findById(mealPlanId, function(err, mealPlan) {
+            var mealIds = [];
+            //remove duplicate meaLIds in mealPlan.meals
             for (var i = 0; i < mealPlan.meals.length; i++) {
-                var mealIds = [];
                 if (!mealIds.includes(mealPlan.meals[i].breakfast.id)) {
-                    mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                    mealIds.push(mealPlan.meals[i].breakfast.id)
                 }
                 if (!mealIds.includes(mealPlan.meals[i].lunch.id)) {
-                    mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                    mealIds.push(mealPlan.meals[i].lunch.id)
                 }
                 if (!mealIds.includes(mealPlan.meals[i].dinner.id)) {
-                    mealIds = mealIds.push(mealPlan.meals[i].breakfast.id)
+                    mealIds.push(mealPlan.meals[i].dinner.id)
                 }
                 if (mealPlan.meals[i].hasOwnProperty('snack')) {
-                    if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
-                        mealIds = mealIds.push(mealPlan.meals[i].snack.id)
+                    if (mealPlan.meals[i].snack.hasOwnProperty('id')) {
+                        if (!mealIds.includes(mealPlan.meals[i].snack.id)) {
+                            mealIds.push(mealPlan.meals[i].snack.id)
+                        }
                     }
                 }
-                for (var i = 0; i < mealIds.length; i++) {
-                    // retrieve meal records
-                    Meal.findById(mealIds[i], function(err, meal) {
-                        // get index of mealPlanId to be deleted
-                        var mealPlanIndex = 0;
-                        for (var i = 0; i < meal.mealPlans.length; i++) {
-                            if (mealPlanId === meal.mealPlans[i].id) {
-                                mealPlanIndex = i;
-                                break;
-                            }
+            }
+            for (var i = 0; i < mealIds.length; i++) {
+                // retrieve meal records
+                Meal.findById(mealIds[i], function(err, meal) {
+                    // get index of mealPlanId to be deleted
+                    var mealPlanIndex = 0;
+                    for (var i = 0; i < meal.mealPlans.length; i++) {
+                        if (mealPlanId === meal.mealPlans[i].id) {
+                            mealPlanIndex = i;
+                            break;
                         }
-                        meal.mealPlans.splice(mealPlanIndex, 1);
-                        meal.updateAttributes({
-                            mealPlans: meal.mealPlans
-                        }, function(err, meal) {
+                    }
+                    meal.mealPlans.splice(mealPlanIndex, 1);
+                    meal.updateAttributes({
+                        mealPlans: meal.mealPlans
+                    }, function(err, meal) {
+                        if (err) {
+                            console.error(err);
+                        }
+                        meal.save(function(err, obj) {
                             if (err) {
                                 console.error(err);
                             }
-                            meal.save(function(err, obj) {
-                                if (err) {
-                                    console.error(err);
-                                }
-                                // TODO: delete image from ./uploads folder
-                            });
+                            // TODO: delete image from ./uploads folder
                         });
                     });
-                }
+                });
             }
         });
         next();
