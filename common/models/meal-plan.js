@@ -62,7 +62,7 @@ module.exports = function(MealPlan) {
         User.findById(userId, function(err, user) {
             var age = (new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear());
             var weight = user.account.vitals.weight / 2.2;
-            var height = ((user.account.feet * 12) + user.account.inches) * 0.0254;
+            var height = (((user.account.vitals.height.feet * 12) + user.account.vitals.height.inches) * 2.54);
             var gender = user.account.profile.gender;
             var EER = 0;
             if (gender === 'male') {
@@ -70,7 +70,7 @@ module.exports = function(MealPlan) {
             } else if (gender === 'female') {
                 EER = 354 - (6.91 * age) + 1.8 * ((9.36 * weight) + (726 * height));
             }
-
+            console.log(age, weight, height, gender, EER);
             var recommendations = [];
             MealPlan.find(function(err, mealPlans) {
                 for (var i = 0; i < mealPlans.length; i++) {
@@ -82,7 +82,7 @@ module.exports = function(MealPlan) {
                     }
                 }
             });
-
+            console.log(age, weight, height, gender, EER);
             fn(null, recommendations);
         });
     };
