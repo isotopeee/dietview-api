@@ -12,10 +12,11 @@ module.exports = function(app) {
 
     // CUSTOM EXPRESS ROUTES
 
+    // Replace with the context obtained from the initial request
+    var context = {};
+
     // BOT ENDPOINT
     app.get('/api/bot', function(req, res) {
-        // Replace with the context obtained from the initial request
-        var context = {};
 
         var q = req.query.q;
         conversation.message({
