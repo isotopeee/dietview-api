@@ -38,12 +38,12 @@
     "messages": {
       "type": "hasMany",
       "model": "Message",
-      "foreignKey": ""
+      "foreignKey": "userId"
     },
     "subscriptions": {
       "type": "hasMany",
       "model": "Subscription",
-      "foreignKey": ""
+      "foreignKey": "userId"
     }
   },
   "acls": [
