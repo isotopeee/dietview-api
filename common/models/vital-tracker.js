@@ -12,11 +12,11 @@ module.exports = function(VitalTracker) {
   VitalTracker.eer = function (req, fn) {
     fn = fn || utils.createPromiseCallback();
         req.query.height = JSON.parse(req.query.height);
-        var age = req.query.age;
-        var weight = req.query.weight / 2.2;
-        var height = (((req.query.height.feet * 12) + req.query.height.inches) * 2.54);
+        var age = Number.parseInt(req.query.age);
+        var weight = Number.parseFloat(req.query.weight / 2.2);
+        var height = (((Number.parseInt(req.query.height.feet * 12)) + Number.parseInt(req.query.height.inches)) * 2.54);
         var gender = req.query.gender;
-        var exerciseLevel = req.query.exerciseLevel;
+        var exerciseLevel = Number.parseInt(req.query.exerciseLevel);
         var EER = 0;
         if (gender === 'male') {
             EER = 662 - (9.53 * age) + exerciseLevel * ((15.91 * weight) + (539.6 * height));

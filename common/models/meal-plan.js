@@ -60,33 +60,35 @@ module.exports = function(MealPlan) {
         var User = app.models.User;
         var userId = req.query.userId;
         User.findById(userId, function(err, user) {
-            var age = (new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear());
+            var age = Number.parseInt((new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear()));
             var weight = user.account.vitals.weight / 2.2;
-            var height = (((user.account.vitals.height.feet * 12) + user.account.vitals.height.inches) * 2.54);
-            console.log(user.account.vitals.height.feet * 12);
+            var height = ((Number.parseInt(user.account.vitals.height.feet * 12)) + Number.parseInt(user.account.vitals.height.inches)) * 0.0254;
             var gender = user.account.profile.gender;
             var EER = 0;
             if (gender === 'male') {
-                EER = 662 - (9.53 * age) + 1.1 * ((15.91 * weight) + (539.6 * height));
+                var x = (662 - (9.53 * age));
+                var y = ((15.91 * weight) + (539.6 * height));
+                var exerciseLevel = 1.0;
+                EER =  x + (exerciseLevel * y);
             } else if (gender === 'female') {
-                EER = 354 - (6.91 * age) + 1.12 * ((9.36 * weight) + (726 * height));
+                var x = (354 - (6.91 * age));
+                var y = ((9.36 * weight) + (726 * height));
+                var exerciseLevel = 1.0;
+                EER = x + (exerciseLevel * y);
             }
-            console.log(age, weight, height, gender, EER);
             var recommendations = [];
             MealPlan.find(function(err, mealPlans) {
                 for (var i = 0; i < mealPlans.length; i++) {
                     var margin = mealPlans[i].averageCalories * .05;
                     var min = mealPlans[i].averageCalories - margin,
                         max = mealPlans[i].averageCalories + margin;
+                    console.log(min, max);
                     if (min < EER && EER < max) {
-                        recommendations.push(mealPlans);
+                        recommendations.push(mealPlans[i]);
                     }
                 }
+                fn(null, recommendations);
             });
-            console.log(user.account.vitals.height.feet);
-            console.log(user.account.vitals.height.inches);
-            console.log(age, weight, height, gender, EER);
-            fn(null, recommendations);
         });
     };
 
