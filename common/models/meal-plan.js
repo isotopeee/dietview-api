@@ -63,12 +63,13 @@ module.exports = function(MealPlan) {
             var age = (new Date().getFullYear()) - (new Date(user.account.profile.birthday).getFullYear());
             var weight = user.account.vitals.weight / 2.2;
             var height = (((user.account.vitals.height.feet * 12) + user.account.vitals.height.inches) * 2.54);
+            console.log(user.account.vitals.height.feet * 12);
             var gender = user.account.profile.gender;
             var EER = 0;
             if (gender === 'male') {
-                EER = 662 - (9.53 * age) + 1.8 * ((15.91 * weight) + (539.6 * height));
+                EER = 662 - (9.53 * age) + 1.1 * ((15.91 * weight) + (539.6 * height));
             } else if (gender === 'female') {
-                EER = 354 - (6.91 * age) + 1.8 * ((9.36 * weight) + (726 * height));
+                EER = 354 - (6.91 * age) + 1.12 * ((9.36 * weight) + (726 * height));
             }
             console.log(age, weight, height, gender, EER);
             var recommendations = [];
@@ -82,6 +83,8 @@ module.exports = function(MealPlan) {
                     }
                 }
             });
+            console.log(user.account.vitals.height.feet);
+            console.log(user.account.vitals.height.inches);
             console.log(age, weight, height, gender, EER);
             fn(null, recommendations);
         });

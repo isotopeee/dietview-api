@@ -4,25 +4,24 @@ module.exports = function(app) {
     var Conversation = require('watson-developer-cloud/conversation/v1');
 
     var conversation = new Conversation({
-        username: 'dee4175c-8d9a-470f-a5a4-eee85f25b0dd',
-        password: 'q4y1ihZoVMk1',
+        username: 'f7c41b99-4861-46bd-8bde-b3ec63bdb9fb',
+        password: 'Ra4QwAOcBbdF',
         version: 'v1',
         version_date: '2017-02-03'
     });
-
-    // Replace with the context obtained from the initial request
-    var context = {};
 
     // CUSTOM EXPRESS ROUTES
 
     // BOT ENDPOINT
     app.get('/api/bot', function(req, res) {
+        // Replace with the context obtained from the initial request
+        var context = {};
+
         var q = req.query.q;
-        console.log(q);
         conversation.message({
-            workspace_id: 'c19b140a-a850-4dc7-bc0e-9e2d21cd11fa',
+            workspace_id: '1c840e7a-6de6-4933-8dde-154a2bbcf81c',
             input: {
-                'text': 'hi'
+                'text': q
             },
             context: context
         }, function(err, response) {
