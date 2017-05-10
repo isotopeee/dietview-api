@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Cooking Oil",
+    "description": "1 tbsp",
+    "calories": 40,
+    "type": "spices",
+    "remarks": "",
+    "status": "active"
+  }
+]

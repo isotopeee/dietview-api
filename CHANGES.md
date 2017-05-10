@@ -1,10 +1,2 @@
-YYYY-MM-DD, Version INITIAL
-===========================
-
- * First release!
-
-2013-03-29, Version DEV
-===========================
-
- * First release!
-
+# May 10, 2017
+    - Fix URL of change password functionality

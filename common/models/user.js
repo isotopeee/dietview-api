@@ -122,7 +122,7 @@ module.exports = function(User) {
 
     //resetPasswordRequest event handler
     User.on('resetPasswordRequest', function(info) {
-        var url = 'https://dietview.mybluemix.net/#/password-reset';
+        var url = 'https://dietview.mybluemix.net/#/reset-password';
         var html = 'Click <a href="' + url + '?access_token=' + info.accessToken.id +
             '&user_id=' + info.accessToken.userId +
             '">here </a> to reset your password';
