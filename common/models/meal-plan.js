@@ -7,7 +7,8 @@ module.exports = function(MealPlan) {
     var path = require('path');
     var formidable = require('formidable');
     var fs = require('fs');
-
+    const DbService = require('../helper/dropbox-service');
+    
     // get reference to the app object
     var app = require('../../server/server');
 
@@ -92,6 +93,14 @@ module.exports = function(MealPlan) {
         });
     };
 
+    MealPlan.uploadWithDB = (fn) => {
+        var file = './data/powered-by-LB-xs.png';
+        var filename = 'lbpic.png';
+        DbService.uploadFile(file, filename, function(data){
+            fn(null, data);
+        });
+    };
+
     /* Remote Methods */
 
     MealPlan.remoteMethod(
@@ -137,6 +146,13 @@ module.exports = function(MealPlan) {
             }
         }
     );
+
+    MealPlan.remoteMethod('uploadWithDB', {
+        http: { path: '/uploadWithDB', verb: 'get' },
+        returns: [
+            { arg: 'path', type: 'string' }
+        ]
+    });
 
     /* Remote Hooks */
 
