@@ -42,7 +42,18 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "mealItems": {
+      "type": "hasAndBelongsToMany",
+      "model": "MealItem",
+      "foreignKey": ""
+    },
+    "mealPlans": {
+      "type": "hasAndBelongsToMany",
+      "model": "MealPlan",
+      "foreignKey": ""
+    }
+  },
   "acls": [
     {
       "accessType": "READ",

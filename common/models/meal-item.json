@@ -6,11 +6,6 @@
     "validateUpsert": true
   },
   "properties": {
-    "meals": {
-      "type": [
-        "string"
-      ]
-    },
     "name": {
       "type": "string",
       "required": true
@@ -35,7 +30,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "meals": {
+      "type": "hasAndBelongsToMany",
+      "model": "Meal",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": {}
 }

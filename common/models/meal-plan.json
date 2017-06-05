@@ -45,7 +45,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "meals": {
+      "type": "hasAndBelongsToMany",
+      "model": "Meal",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": {}
 }
