@@ -14,7 +14,34 @@ module.exports = function(Meal) {
     /* Static Methods */
 
     // upload image handler
-    Meal.upload = function(req, fn) {
+    Meal.upload = upload;
+
+    /* Remote Methods */
+
+    Meal.remoteMethod(
+        'upload', {
+            description: 'Upload meal image',
+            accepts: [{
+                arg: 'req',
+                type: 'object',
+                http: {
+                    source: 'req'
+                }
+            }],
+            returns: [{
+                arg: 'path',
+                type: 'string'
+            }],
+            http: {
+                verb: 'post',
+                path: '/upload',
+                status: '200'
+            }
+        }
+    );
+    ////////////////////////////////////////////////////////////////////////////
+
+    function upload (req, fn) {
         fn = fn || utils.createPromiseCallback();
 
         var form = new formidable.IncomingForm();
@@ -52,96 +79,5 @@ module.exports = function(Meal) {
         });
 
         return fn.promise;
-    };
-
-    /* Remote Methods */
-
-    Meal.remoteMethod(
-        'upload', {
-            description: 'Upload meal image',
-            accepts: [{
-                arg: 'req',
-                type: 'object',
-                http: {
-                    source: 'req'
-                }
-            }],
-            returns: [{
-                arg: 'path',
-                type: 'string'
-            }],
-            http: {
-                verb: 'post',
-                path: '/upload',
-                status: '200'
-            }
-        }
-    );
-
-    /* Remote Hooks */
-
-    Meal.afterRemote('create', function(ctx, meal, next) {
-        // get reference to MealItem model
-        var MealItem = app.models.MealItem;
-
-        for (var i = 0; i < meal.mealItems.length; i++) {
-            meal.mealItems[i].meals = undefined;
-            meal.save(function (err, obj) {
-                if (err) {
-                    console.error(err);
-                }
-            });
-            MealItem.findById(meal.mealItems[i].id, function(err, mealItem) {
-                if (err) {
-                    console.error(err);
-                }
-                var meals = mealItem.meals;
-                if (meals) {
-                    meals.push(meal.id);
-                } else {
-                    meals = [meal.id];
-                }
-                mealItem.updateAttributes({
-                    meals: meals
-                }, function(err, mealItem) {
-                    if (err) {
-                        console.error(err);
-                    }
-                });
-            });
-        }
-        next();
-    });
-
-    /* Operation Hooks */
-
-    Meal.observe('before delete', function(ctx, next) {
-        var MealItem = app.models.MealItem;
-        var mealId = ctx.where.id;
-        // retrieve meal record to be deleted
-        Meal.findById(mealId, function(err, meal) {
-            for (var i = 0; i < meal.mealItems.length; i++) {
-                // retrieve meal item records
-                MealItem.findById(meal.mealItems[i].id, function(err, mealItem) {
-                    // get index of mealId to be deleted
-                    var mealIndex = mealItem.meals.indexOf(mealId);
-                    mealItem.meals.splice(mealIndex, 1);
-                    mealItem.updateAttributes({
-                        meals: mealItem.meals
-                    }, function(err, mealItem) {
-                        if (err) {
-                            console.error(err);
-                        }
-                        mealItem.save(function(err, obj) {
-                            if (err) {
-                                console.error(err);
-                            }
-                            // TODO: delete image from ./uploads folder
-                        });
-                    });
-                });
-            }
-        });
-        next();
-    });
+    }
 };

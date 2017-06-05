@@ -6,25 +6,6 @@
     "validateUpsert": true
   },
   "properties": {
-    "mealItems": {
-      "type": [
-        "object"
-      ]
-    },
-    "mealPlans": {
-      "type": [
-        "object"
-      ]
-    },
-    "feedbacks": {
-      "type": [
-        "object"
-      ]
-    },
-    "code": {
-      "type": "string",
-      "required": true
-    },
     "name": {
       "type": "string",
       "required": true
