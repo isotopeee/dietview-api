@@ -8,7 +8,7 @@
     "body-parser": "^1.17.0",
     "compression": "^1.0.3",
     "cors": "^2.7.1",
-    "dropbox": "^2.5.1",
+    "dropbox": "^2.5.3",
     "errorhandler": "^1.1.1",
     "formidable": "^1.0.16",
     "function-rate-limit": "~0.0.1",
@@ -38,6 +38,7 @@
   "devDependencies": {
     "jshint": "^2.7.0",
     "mocha": "^1.20.1",
+    "nodemon": "^1.11.0",
     "supertest": "^0.13.0"
   },
   "repository": {
@@ -49,6 +50,7 @@
   "scripts": {
     "test": "mocha -R spec server/test",
     "pretest": "jshint .",
-    "start": "node ."
+    "start": "node .",
+    "watch": "nodemon "
   }
 }
