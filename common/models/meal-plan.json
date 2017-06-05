@@ -6,21 +6,6 @@
     "validateUpsert": true
   },
   "properties": {
-    "meals": {
-      "type": [
-        "object"
-      ],
-      "required": true
-    },
-    "feedbacks": {
-      "type": [
-        "object"
-      ]
-    },
-    "code": {
-      "type": "string",
-      "required": true
-    },
     "name": {
       "type": "string",
       "required": true
