@@ -41,6 +41,9 @@
     "nodemon": "^1.11.0",
     "supertest": "^0.13.0"
   },
+  "engines": {
+    "node": "6.10.2"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/isotopeee/dietview-api.git"
