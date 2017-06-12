@@ -42,7 +42,7 @@
     "supertest": "^0.13.0"
   },
   "engines": {
-    "node": "6.x"
+    "node": "4.x"
   },
   "repository": {
     "type": "git",
