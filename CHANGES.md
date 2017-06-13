@@ -1,3 +1,8 @@
+# June 13, 2017
+    - Rollback node version (4.x) to fix deployment issue
+    - Create 'Task' model
+    - Generate new 'Angular Services'
+
 # June 12, 2017
     - Specify node version (6.10.2) to fix deployment issue
 
