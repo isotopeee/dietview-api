@@ -65,5 +65,9 @@
   "VitalTracker": {
     "dataSource": "cloudant",
     "public": true
+  },
+  "Task": {
+    "dataSource": "cloudant",
+    "public": true
   }
 }

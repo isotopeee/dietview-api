@@ -25,7 +25,7 @@
   },
   "legacyExplorer": false,
   "logoutSessionsOnSensitiveChanges": true,
-  "dropbox":{
+  "dropbox": {
     "root": "/Dietview/",
     "accessToken": "h_yReQUP-3AAAAAAAAAAFg1efEn6n0fugVGTuGiPWuGipoNld365d5eoP7RQBRjd"
   }

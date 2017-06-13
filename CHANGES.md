@@ -1,4 +1,5 @@
 # June 12, 2017
+    - Specify node version (6.10.2) to fix deployment issue
 
 # June 08, 2017
     - Generate new 'Angular Services'
