@@ -8,9 +8,6 @@ module.exports = function(Meal) {
     var formidable = require('formidable');
     var fs = require('fs');
 
-    // get reference to the app object
-    var app = require('../../server/server');
-
     /* Static Methods */
 
     // upload image handler
@@ -39,7 +36,22 @@ module.exports = function(Meal) {
             }
         }
     );
+
+    /* Remote Hooks */
+
+    Meal.afterRemote('create', _afterCreateRemoteHook);
+
     ////////////////////////////////////////////////////////////////////////////
+
+    function _afterCreateRemoteHook(ctx, meal, next) {
+        var mealItems = ctx.args.data.mealItems;
+        mealItems.forEach(function (mealItem, index) {
+            meal.mealItems.add(mealItem.id, function (err) {
+                next(err);
+            });
+        });
+        next();
+    }
 
     function upload (req, fn) {
         fn = fn || utils.createPromiseCallback();
