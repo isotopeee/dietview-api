@@ -40,6 +40,7 @@ module.exports = function(Meal) {
     /* Remote Hooks */
 
     Meal.afterRemote('create', _afterCreateRemoteHook);
+    Meal.afterRemote('upsert', _afterUpsertRemoteHook);
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -47,10 +48,72 @@ module.exports = function(Meal) {
         var mealItems = ctx.args.data.mealItems;
         mealItems.forEach(function (mealItem, index) {
             meal.mealItems.add(mealItem.id, function (err) {
-                next(err);
+                if (err) {
+                    next(err);
+                }
             });
         });
         next();
+    }
+
+    function _afterUpsertRemoteHook(ctx, meal, next) {
+        var newMealItems = ctx.args.data.mealItems,
+            oldMealItems = [],
+            mealItemsToRemove = [],
+            mealItemsToAdd = [];
+
+        meal.mealItems({}, function (err, mealItems) {
+            oldMealItems = mealItems;
+
+            // TODO: Remove oldMealItems not in newMealItems
+            oldMealItems.forEach(function (oldMealItem, index) {
+                var idx = newMealItems.findIndex(newMI => newMI.id === oldMealItem.id);
+                if (idx === -1) {
+                    mealItemsToRemove.push(oldMealItem);
+                }
+            });
+
+
+            // TODO: Add newMealItems not in oldMealItems
+            newMealItems.forEach(function (newMealItem, index) {
+                var idx = oldMealItems.findIndex(oldMI => oldMI.id === newMealItem.id);
+                if (idx === -1) {
+                    mealItemsToAdd.push(newMealItem);
+                }
+            });
+
+            if (mealItemsToAdd.length) {
+                console.log('Added meal items.');
+                mealItemsToAdd.forEach(function (mealItemToAdd, index) {
+                    meal.mealItems.add(mealItemToAdd.id, function (err) {
+                        if (err) {
+                            console.error(err);
+                            next(err);
+                        } else if (mealItemsToRemove.length) {
+                            mealItemsToRemove.forEach(function (mealItemToRemove, index) {
+                                meal.mealItems.remove(mealItemToRemove.id, function (err) {
+                                    if (err) {
+                                        next(err);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                });
+            } else if (!mealItemsToAdd.length && mealItemsToRemove.length) {
+                console.log('Removed meal items.');
+                mealItemsToRemove.forEach(function (mealItemToRemove, index) {
+                    meal.mealItems.remove(mealItemToRemove.id, function (err) {
+                        if (err) {
+                            next(err);
+                        }
+                    });
+                });
+            } else {
+                console.log('Meal items not updated.');
+            }
+            next();
+        });
     }
 
     function upload (req, fn) {
