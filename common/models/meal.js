@@ -39,14 +39,16 @@ module.exports = function(Meal) {
 
     /* Remote Hooks */
 
-    Meal.afterRemote('create', _afterCreateRemoteHook);
-    Meal.afterRemote('upsert', _afterUpsertRemoteHook);
+    Meal.afterRemote('create', _afterCreateRemoteHookCB);
+    Meal.afterRemote('upsert', _afterUpsertRemoteHookCB);
 
+    /* Operation Hooks */
+    Meal.observe('before delete', _beforeDeleteOperationHookCB);
     ////////////////////////////////////////////////////////////////////////////
 
-    function _afterCreateRemoteHook(ctx, meal, next) {
+    function _afterCreateRemoteHookCB(ctx, meal, next) {
         var mealItems = ctx.args.data.mealItems;
-        mealItems.forEach(function (mealItem, index) {
+        mealItems.forEach(function (mealItem) {
             meal.mealItems.add(mealItem.id, function (err) {
                 if (err) {
                     next(err);
@@ -56,7 +58,7 @@ module.exports = function(Meal) {
         next();
     }
 
-    function _afterUpsertRemoteHook(ctx, meal, next) {
+    function _afterUpsertRemoteHookCB(ctx, meal, next) {
         var newMealItems = ctx.args.data.mealItems,
             oldMealItems = [],
             mealItemsToRemove = [],
@@ -66,7 +68,7 @@ module.exports = function(Meal) {
             oldMealItems = mealItems;
 
             // TODO: Remove oldMealItems not in newMealItems
-            oldMealItems.forEach(function (oldMealItem, index) {
+            oldMealItems.forEach(function (oldMealItem) {
                 var idx = newMealItems.findIndex(newMI => newMI.id === oldMealItem.id);
                 if (idx === -1) {
                     mealItemsToRemove.push(oldMealItem);
@@ -75,7 +77,7 @@ module.exports = function(Meal) {
 
 
             // TODO: Add newMealItems not in oldMealItems
-            newMealItems.forEach(function (newMealItem, index) {
+            newMealItems.forEach(function (newMealItem) {
                 var idx = oldMealItems.findIndex(oldMI => oldMI.id === newMealItem.id);
                 if (idx === -1) {
                     mealItemsToAdd.push(newMealItem);
@@ -84,13 +86,13 @@ module.exports = function(Meal) {
 
             if (mealItemsToAdd.length) {
                 console.log('Added meal items.');
-                mealItemsToAdd.forEach(function (mealItemToAdd, index) {
+                mealItemsToAdd.forEach(function (mealItemToAdd) {
                     meal.mealItems.add(mealItemToAdd.id, function (err) {
                         if (err) {
                             console.error(err);
                             next(err);
                         } else if (mealItemsToRemove.length) {
-                            mealItemsToRemove.forEach(function (mealItemToRemove, index) {
+                            mealItemsToRemove.forEach(function (mealItemToRemove) {
                                 meal.mealItems.remove(mealItemToRemove.id, function (err) {
                                     if (err) {
                                         next(err);
@@ -102,7 +104,7 @@ module.exports = function(Meal) {
                 });
             } else if (!mealItemsToAdd.length && mealItemsToRemove.length) {
                 console.log('Removed meal items.');
-                mealItemsToRemove.forEach(function (mealItemToRemove, index) {
+                mealItemsToRemove.forEach(function (mealItemToRemove) {
                     meal.mealItems.remove(mealItemToRemove.id, function (err) {
                         if (err) {
                             next(err);
@@ -114,6 +116,28 @@ module.exports = function(Meal) {
             }
             next();
         });
+    }
+
+    function _beforeDeleteOperationHookCB (ctx, next) {
+        var mealId = ctx.where.id;
+        Meal.find({
+            where: {
+                id: mealId
+            }
+        }, function (err, meal) {
+            meal.forEach(function (meal) {
+                meal.mealItems({}, function (err, mealItems) {
+                    mealItems.forEach(function (mealItem) {
+                        meal.mealItems.remove(mealItem.id, function (err) {
+                            if (err) {
+                                next(err);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+        next();
     }
 
     function upload (req, fn) {
