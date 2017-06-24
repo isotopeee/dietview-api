@@ -14,9 +14,7 @@ module.exports = function(MealPlan) {
 
   /* Static Methods */
 
-  // upload image handler
   MealPlan.upload = upload;
-  // food recommendations handler
   MealPlan.recommendations = recommendations;
   MealPlan.uploadWithDB = uploadWithDB;
 
@@ -73,7 +71,189 @@ module.exports = function(MealPlan) {
       ]
   });
 
+  /* Remote Hooks */
+
+  MealPlan.afterRemote('create', _afterCreateRemoteHookCB);
+  MealPlan.afterRemote('upsert', _afterUpsertRemoteHookCB);
+
+  /* Operation Hooks */
+
+  MealPlan.observe('before delete', _beforeDeleteOperationHookCB);
+
   ////////////////////////////////////////////////////////////////////////////
+
+  function _afterCreateRemoteHookCB(ctx, mealPlan, next) {
+    // TODO: Perform cascade insert on related meals
+    var meals = ctx.args.data.meals;
+    var throughModel = MealPlan.app.models.TM_MealMealPlan;
+    var mealPlanMeals = [];
+    var mealPlanMeal = null;
+    meals.forEach(function (meal, index) {
+      mealPlanMeal = {
+        mealId: meal.breakfast.id,
+        mealPlanId: mealPlan.id,
+        day: index + 1
+      };
+
+      mealPlanMeals.push(mealPlanMeal);
+
+      mealPlanMeal = {
+        mealId: meal.lunch.id,
+        mealPlanId: mealPlan.id,
+        day: index + 1
+      };
+
+      mealPlanMeals.push(mealPlanMeal);
+
+      mealPlanMeal = {
+        mealId: meal.dinner.id,
+        mealPlanId: mealPlan.id,
+        day: index + 1
+      };
+
+      mealPlanMeals.push(mealPlanMeal);
+
+      if (meal.snack) {
+        mealPlanMeal = {
+          mealId: meal.snack.id,
+          mealPlanId: mealPlan.id,
+          day: index + 1
+        };
+
+        mealPlanMeals.push(mealPlanMeal);
+      }
+    });
+
+    throughModel.create(mealPlanMeals, function (err, mealPlanMeals) {
+      if (err) {
+        next(err);
+      }
+      console.log(mealPlanMeals);
+    });
+    console.log('MEALS');
+    console.log(meals);
+    next();
+  }
+
+  function _afterUpsertRemoteHookCB(ctx, mealPlan, next) {
+    var i,
+        mealPlanId = ctx.args.data.id,
+        mealPlanMeal = null,
+        newMealPlanMeals = ctx.args.data.meals,
+        oldMealPlanMeals = [],
+        mealPlanMealsToRemove = [],
+        mealPlanMealsToAdd = [],
+        throughModel = MealPlan.app.models.TM_MealMealPlan,
+        filter = {
+          where: {
+            mealPlanId: mealPlanId
+          },
+          include: {
+            relation: 'meal',
+            scope: {
+              fields: ['type']
+            }
+          },
+          order: 'day ASC'
+        };
+    // IDEA: Fetch meals of mealPlan, include meal object and sort by day (ASC)
+    throughModel.find(filter, function (err, mealPlanMeals) {
+      if (err) {
+        next(err);
+      }
+
+      // IDEA: Store last item in mealPlanMeals
+      var lastItem = mealPlanMeals[mealPlanMeals.length - 1];
+
+      // IDEA: Populate oldMealPlanMeals with object with null values
+      for (i = 0; i < lastItem.day; i++) {
+        mealPlanMeal = {
+          breakfast: null,
+          lunch: null,
+          dinner: null,
+          snack: null
+        };
+        oldMealPlanMeals.push(mealPlanMeal);
+      }
+
+      // IDEA: Make oldMealPlanMeals data symetric to newMealPlanMeals
+      mealPlanMeals.forEach(function (mealPlanMeal) {
+        oldMealPlanMeals[mealPlanMeal.day - 1][mealPlanMeal.meal.type] = {
+          mealPlanMealId: mealPlanMeal.id,
+          id: mealPlanMeal.mealId,
+          day: mealPlanMeal.day
+        };
+      });
+
+      // IDEA: Populate mealPlanMealsToRemove & mealPlanMealsToAdd
+      for (i = 0; i < oldMealPlanMeals.length; i++) {
+        // IDEA: Iterate through each mealTime (breakfast, lunch, dinner, snack)
+        ['breakfast', 'lunch', 'dinner', 'snack'].forEach(function (mealTime) {
+          // IDEA: Check IF oldMealPlanMeals & newMealPlanMeals is not null
+          if (oldMealPlanMeals[i][mealTime] && newMealPlanMeals[i][mealTime]) {
+            // IDEA: Check IF the mealId for the current mealTime of oldMealPlanMeals & newMealPlanMeals was changed
+            if (oldMealPlanMeals[i][mealTime].id !== newMealPlanMeals[i][mealTime].id) {
+              // IDEA: IF changed, add the current oldMealPlanMeal mealPlanId to mealPlanMealsToRemove...
+              mealPlanMealsToRemove.push(oldMealPlanMeals[i].mealPlanMealId);
+              // IDEA: ...THEN, create a mealPlanMeal object to persist by throughModel
+              mealPlanMeal = {
+                mealId: newMealPlanMeals[i][mealTime].id,
+                mealPlanId: mealPlanId,
+                day: oldMealPlanMeals[i].day
+              };
+              // IDEA: ADD the created mealPlanMeal object to mealPlanMealsToAdd
+              mealPlanMealsToAdd.push(mealPlanMeal);
+            }
+            // IDEA: Check IF oldMealPlanMeals is null & newMealPlanMeals is not null
+          } else if (!oldMealPlanMeals[i][mealTime] && newMealPlanMeals[i][mealTime]) {
+            // IDEA: Create a mealPlanMeal object to persist by throughModel
+            mealPlanMeal = {
+              mealId: newMealPlanMeals[i][mealTime].id,
+              mealPlanId: mealPlanId,
+              day: i - 1
+            };
+            // IDEA: ADD the created mealPlanMeal object to mealPlanMealsToAdd
+            mealPlanMealsToAdd.push(mealPlanMeal);
+            // IDEA: Check IF oldMealPlanMeals is not null & newMealPlanMeals is null
+          } else if (oldMealPlanMeals[i][mealTime] && !newMealPlanMeals[i][mealTime]) {
+            // IDEA: ADD the current oldMealPlanMeal mealPlanId to mealPlanMealsToRemove
+            mealPlanMealsToRemove.push(oldMealPlanMeals[i].mealPlanMealId);
+          }
+        });
+      }
+
+      // IDEA: Perform bulk create to persist newMealPlanMeals to throughModel
+      throughModel.create(mealPlanMealsToAdd, function (err, mealPlanMealsToAdd) {
+        if (err) {
+          next(err);
+        }
+        console.log(mealPlanMealsToAdd);
+      });
+
+      // IDEA: Remove oldMealPlanMeals from throughModel
+      mealPlanMealsToRemove.forEach(function (mealPlanMealId) {
+        throughModel.destroyById(mealPlanMealId, function (err) {
+          if (err) {
+            next(err);
+          }
+        });
+      });
+    });
+    next();
+  }
+
+  function _beforeDeleteOperationHookCB(ctx, next) {
+    var mealPlanId = ctx.where.id,
+        throughModel = MealPlan.app.models.TM_MealMealPlan;
+    // IDEA: Perform bulk delete using throughModel
+    throughModel.destroyAll({mealPlanId: mealPlanId}, function (err) {
+      if (err) {
+        next(err);
+      }
+    });
+    next();
+  }
+
   function upload(req, fn) {
     fn = fn || utils.createPromiseCallback();
 
@@ -156,7 +336,7 @@ module.exports = function(MealPlan) {
       });
     });
   }
-  
+
   function uploadWithDB(fn) {
     var file = './data/powered-by-LB-xs.png';
     var filename = 'lbpic.png';

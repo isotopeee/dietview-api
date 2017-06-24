@@ -43,7 +43,9 @@ module.exports = function(Meal) {
     Meal.afterRemote('upsert', _afterUpsertRemoteHookCB);
 
     /* Operation Hooks */
+    
     Meal.observe('before delete', _beforeDeleteOperationHookCB);
+
     ////////////////////////////////////////////////////////////////////////////
 
     function _afterCreateRemoteHookCB(ctx, meal, next) {
