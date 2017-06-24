@@ -47,9 +47,10 @@
   "validations": [],
   "relations": {
     "meals": {
-      "type": "hasAndBelongsToMany",
+      "type": "hasMany",
       "model": "Meal",
-      "foreignKey": ""
+      "foreignKey": "mealPlanId",
+      "through": "TM_MealMealPlan"
     }
   },
   "acls": [],

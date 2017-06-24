@@ -69,5 +69,9 @@
   "Task": {
     "dataSource": "cloudant",
     "public": true
+  },
+  "TM_MealMealPlan": {
+    "dataSource": "cloudant",
+    "public": true
   }
 }

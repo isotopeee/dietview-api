@@ -1,0 +1,28 @@
+{
+  "name": "TM_MealMealPlan",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "day": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "meal": {
+      "type": "belongsTo",
+      "model": "Meal",
+      "foreignKey": "mealId"
+    },
+    "mealPlan": {
+      "type": "belongsTo",
+      "model": "MealPlan",
+      "foreignKey": "mealPlanId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

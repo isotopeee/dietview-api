@@ -49,9 +49,10 @@
       "foreignKey": ""
     },
     "mealPlans": {
-      "type": "hasAndBelongsToMany",
+      "type": "hasMany",
       "model": "MealPlan",
-      "foreignKey": ""
+      "foreignKey": "mealId",
+      "through": "TM_MealMealPlan"
     }
   },
   "acls": [
