@@ -178,7 +178,8 @@ module.exports = function(MealPlan) {
 
       // IDEA: Make oldMealPlanMeals data symetric to newMealPlanMeals
       mealPlanMeals.forEach(function (mealPlanMeal) {
-        oldMealPlanMeals[mealPlanMeal.day - 1][mealPlanMeal.meal.type] = {
+        // IDEA: Lazy load meal data on mealPlanMeal
+        oldMealPlanMeals[mealPlanMeal.day - 1][mealPlanMeal.meal().type] = {
           mealPlanMealId: mealPlanMeal.id,
           id: mealPlanMeal.mealId,
           day: mealPlanMeal.day
@@ -194,12 +195,12 @@ module.exports = function(MealPlan) {
             // IDEA: Check IF the mealId for the current mealTime of oldMealPlanMeals & newMealPlanMeals was changed
             if (oldMealPlanMeals[i][mealTime].id !== newMealPlanMeals[i][mealTime].id) {
               // IDEA: IF changed, add the current oldMealPlanMeal mealPlanId to mealPlanMealsToRemove...
-              mealPlanMealsToRemove.push(oldMealPlanMeals[i].mealPlanMealId);
+              mealPlanMealsToRemove.push(oldMealPlanMeals[i][mealTime].mealPlanMealId);
               // IDEA: ...THEN, create a mealPlanMeal object to persist by throughModel
               mealPlanMeal = {
                 mealId: newMealPlanMeals[i][mealTime].id,
                 mealPlanId: mealPlanId,
-                day: oldMealPlanMeals[i].day
+                day: oldMealPlanMeals[i][mealTime].day
               };
               // IDEA: ADD the created mealPlanMeal object to mealPlanMealsToAdd
               mealPlanMealsToAdd.push(mealPlanMeal);
@@ -210,17 +211,21 @@ module.exports = function(MealPlan) {
             mealPlanMeal = {
               mealId: newMealPlanMeals[i][mealTime].id,
               mealPlanId: mealPlanId,
-              day: i - 1
+              day: i + 1
             };
             // IDEA: ADD the created mealPlanMeal object to mealPlanMealsToAdd
             mealPlanMealsToAdd.push(mealPlanMeal);
             // IDEA: Check IF oldMealPlanMeals is not null & newMealPlanMeals is null
           } else if (oldMealPlanMeals[i][mealTime] && !newMealPlanMeals[i][mealTime]) {
             // IDEA: ADD the current oldMealPlanMeal mealPlanId to mealPlanMealsToRemove
-            mealPlanMealsToRemove.push(oldMealPlanMeals[i].mealPlanMealId);
+            mealPlanMealsToRemove.push(oldMealPlanMeals[i][mealTime].mealPlanMealId);
           }
         });
       }
+      console.log('ADD');
+      console.log(mealPlanMealsToAdd);
+      console.log('REMOVE');
+      console.log(mealPlanMealsToRemove);
 
       // IDEA: Perform bulk create to persist newMealPlanMeals to throughModel
       throughModel.create(mealPlanMealsToAdd, function (err, mealPlanMealsToAdd) {
