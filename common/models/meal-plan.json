@@ -55,7 +55,7 @@
     "subscriptions": {
       "type": "hasMany",
       "model": "Subscription",
-      "foreignKey": ""
+      "foreignKey": "mealPlanId"
     }
   },
   "acls": [],

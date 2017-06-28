@@ -44,7 +44,7 @@
     "mealPlan": {
       "type": "belongsTo",
       "model": "MealPlan",
-      "foreignKey": ""
+      "foreignKey": "mealPlanId"
     }
   },
   "acls": [],
