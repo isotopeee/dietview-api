@@ -6,14 +6,6 @@
     "validateUpsert": true
   },
   "properties": {
-    "customer": {
-      "type": "object",
-      "required": true
-    },
-    "mealPlan": {
-      "type": "object",
-      "required": true
-    },
     "paymentDetails": {
       "type": "object",
       "required": true
@@ -48,6 +40,11 @@
       "type": "belongsTo",
       "model": "user",
       "foreignKey": "userId"
+    },
+    "mealPlan": {
+      "type": "belongsTo",
+      "model": "MealPlan",
+      "foreignKey": ""
     }
   },
   "acls": [],
