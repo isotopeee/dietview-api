@@ -41,7 +41,7 @@ module.exports = function(Subscription) {
 
     var form = new formidable.IncomingForm();
 
-    form.uploadDir = './uploads/images/meal_plans';
+    form.uploadDir = './uploads/images/subscriptions';
 
     var new_path = '';
 
