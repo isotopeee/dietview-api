@@ -1,3 +1,12 @@
+# June 30, 2017
+    - Create 'upload' remote method on 'Subscription'
+    - Generate new 'LB Angular Services'
+
+# June 28, 2017
+    - Redefine 'Subscription' properties
+    - Redefine model relationships (hasMany: MealPlan -> Subscription;fk mealPlanId)
+    - Generate new 'Angular Services'
+
 # June 24, 2017
     - Create remote hook to implement cascading update on 'MealPlan' model
     - Create observer hooks to implement cascading delete on 'MealPlan' model
