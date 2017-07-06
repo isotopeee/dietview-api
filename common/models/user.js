@@ -100,10 +100,10 @@ module.exports = function(User) {
                 from: 'dietviewph@gmail.com',
                 subject: 'Thank you for signing up',
                 user: User,
-                host: 'dietview-api.mybluemix.net',
-                port: '443',
-                protocol: 'https',
-                redirect: 'https://dietview.mybluemix.net'
+                host: 'localhost',
+                port: '3000',
+                protocol: 'http',
+                redirect: 'http://localhost:6001'
             };
 
             //send verification email
@@ -122,7 +122,7 @@ module.exports = function(User) {
 
     //resetPasswordRequest event handler
     User.on('resetPasswordRequest', function(info) {
-        var url = 'https://dietview.mybluemix.net/#/reset-password';
+        var url = 'http://localhost:3000/#/reset-password';
         var html = 'Click <a href="' + url + '?access_token=' + info.accessToken.id +
             '&user_id=' + info.accessToken.userId +
             '">here </a> to reset your password';

@@ -6,6 +6,10 @@
     "validateUpsert": true
   },
   "properties": {
+    "duration": {
+      "type": "number",
+      "required": true
+    },
     "name": {
       "type": "string",
       "required": true
