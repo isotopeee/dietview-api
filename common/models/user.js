@@ -103,7 +103,7 @@ module.exports = function(User) {
                 host: 'localhost',
                 port: '3000',
                 protocol: 'http',
-                redirect: 'http://localhost:6001'
+                redirect: 'http://localhost:6001/#/account-verified'
             };
 
             //send verification email
