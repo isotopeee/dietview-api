@@ -1,3 +1,6 @@
+# August 30, 2017
+    - Implement SoftDelete on primary models (MealItem, Meal, MealPlan, and Subscription)
+
 # June 30, 2017
     - Create 'upload' remote method on 'Subscription'
     - Generate new 'LB Angular Services'
