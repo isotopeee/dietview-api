@@ -12,4 +12,20 @@ module.exports = function(app){
         };
     };
     */
+
+    /**
+     * Bulk update isDeleted property
+     */
+    /*
+    var Subscription = app.models.Subscription;
+    Subscription.updateAll({}, {
+        ['isDeleted']: false
+    }, function(info, err){
+        if(err){
+            console.error(err);
+        } else {
+            console.log('Updated Meal Plans instances isDeleted property', info);
+        }
+    })
+    */
 };
