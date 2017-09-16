@@ -23,6 +23,24 @@ module.exports  = function(Model, options) {
      * @param   {object}    where   Where Filter
      * @param   {function}  cb      Async Callback
      */
+    Model.destroyAll = function(where, cb) {
+        Model.updateAll(where, {
+            ['deletedAt']: new Date(),
+            ['isDeleted']: true
+        })
+        .then(result => (typeof cb === 'function') ? cb(null, result) : result)
+        .catch(error => (typeof cb === 'function') ? cb(error) : Promise.reject(error));
+    }
+
+    Model.remove = Model.destroyAll;
+    Model.deleteAll = Model.destroyAlll
+
+    /**
+     * Soft Delete, this will set a row or data that is considered deleted
+     * 
+     * @param   {object}    where   Where Filter
+     * @param   {function}  cb      Async Callback
+     */
     Model.deleteById = function(id, cb) {
         Model.updateAll({id: id}, {
             ['deletedAt']: new Date(),
@@ -61,6 +79,4 @@ module.exports  = function(Model, options) {
         console.log("filter:", JSON.stringify(filter));
         return _find.call(Model, filter, ...args);
     }
-
-    
 }

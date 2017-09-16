@@ -1,31 +1,42 @@
-module.exports = function(app){
-    /*
-    var MealItem = app.models.MealItem;
-    importIngredientsData();
-    /////////////////////////////////////////////////////////////
-    function importIngredientsData() {
-        var ingredients = require('../../data/ingredients.json');
-        for (var i = 0; i < ingredients.length; i++) {
-            MealItem.create(ingredients[i],function (err, obj) {
-                console.log("Added %s to ingredients", obj.name);
-            });
-        };
-    };
-    */
+/**
+ * This bootscript removes unprocessed and completed (expired) subscriptions.
+ */
+'use strict';
 
-    /**
-     * Bulk update isDeleted property
-     */
-    /*
-    var Subscription = app.models.Subscription;
-    Subscription.updateAll({}, {
-        ['isDeleted']: false
-    }, function(info, err){
-        if(err){
-            console.error(err);
-        } else {
-            console.log('Updated Meal Plans instances isDeleted property', info);
-        }
-    })
-    */
+module.exports = function(app){
+    const jobDate = new Date();
+
+    Subscription.findUnprocessed((err, unprocessedSubscriptions) => {
+        unprocessedSubscriptions = unprocessedSubscriptions.map(us => ({id: us.id}));
+        const where = {
+            or: unprocessedSubscriptions
+        };
+        Subscription.updateAll(where, {
+            ['status']: 'unprocessed'
+        }, (err, info) => {
+            console.log(info);
+            Subscription.destroyAll(where, (err, info) => {
+            console.log(info)
+            });
+        });
+    });
+
+    console.log(`Unprocessed subscriptions removed at: ${jobDate}`);
+
+    Subscription.findCompleted((err, completedSubscriptions) => {
+        completedSubscriptions = completedSubscriptions.map(us => ({id: us.id}));
+        const where = {
+          or: completedSubscriptions
+        };
+        Subscription.updateAll(where, {
+          ['status']: 'completed'
+        }, (err, info) => {
+          console.log(info);
+          Subscription.destroyAll(where, (err, info) => {
+            console.log(info)
+          });
+        });
+    });
+
+    console.log(`Completed subscriptions removed at: ${jobDate}`);
 };

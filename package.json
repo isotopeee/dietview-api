@@ -8,6 +8,7 @@
     "body-parser": "^1.17.0",
     "compression": "^1.0.3",
     "cors": "^2.7.1",
+    "cron": "^1.2.1",
     "dropbox": "^2.5.3",
     "errorhandler": "^1.1.1",
     "formidable": "^1.0.16",
@@ -31,8 +32,8 @@
     "weighted": "~0.2.2"
   },
   "optionalDependencies": {
-    "loopback-connector-mysql": "^1.2.1",
     "loopback-connector-mongodb": "^1.2.5",
+    "loopback-connector-mysql": "^1.2.1",
     "loopback-connector-oracle": "^1.2.1"
   },
   "devDependencies": {

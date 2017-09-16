@@ -1,3 +1,6 @@
+# Sept 7, 2017
+    - Implement job scheduler to remove expired subscriptions
+
 # August 30, 2017
     - Implement SoftDelete on primary models (MealItem, Meal, MealPlan, and Subscription)
 

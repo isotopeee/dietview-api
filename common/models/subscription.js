@@ -8,9 +8,56 @@ module.exports = function(Subscription) {
   var fs = require('fs');
 
   /* Static Methods */
+  Subscription.findCompleted = findCompleted;
+  Subscription.findExpired = findExpired;
+  Subscription.findUnprocessed = findUnprocessed;
+  
   Subscription.upload = upload;
 
-  /* Remote Methods */
+  Subscription.remoteMethod(
+    'findCompleted', {
+      description: 'Find completed active subscriptions.',
+      returns: [{
+        type: 'array',
+        root: true
+      }],
+      http: {
+        verb: 'get',
+        path:'/findCompleted',
+        status: '200'
+      }
+    }
+  )
+
+  Subscription.remoteMethod(
+    'findExpired', {
+      description: 'Find expired unprocessed and completed active subscriptions.',
+      returns: [{
+        type: 'array',
+        root: true
+      }],
+      http: {
+        verb: 'get',
+        path: '/findExpired',
+        status: '200'
+      }
+    }
+  )
+
+  Subscription.remoteMethod(
+    'findUnprocessed', {
+      description: 'Find expired unprocessed subscriptions.',
+      returns: [{
+        type: 'array',
+        root: true
+      }],
+      http: {
+        verb: 'get',
+        path: '/findUnprocessed',
+        status: '200'
+      }
+    }
+  )
 
   Subscription.remoteMethod(
     'upload', {
@@ -35,6 +82,61 @@ module.exports = function(Subscription) {
   );
 
   //////////////////////////////////////////////////////////////////////////////
+
+  function findCompleted(cb) {
+    cb = cb || utils.createPromiseCallback();
+
+    const filter = {
+      where: {
+        status: 'active'
+      },
+      order: 'endDate DESC'
+    };
+    Subscription.find(filter, (err, completedSubscriptions) => {
+      let subscriptionsToDelete = completedSubscriptions.filter(cs => {
+        const now = new Date();
+        return now > cs.endDate;
+      });
+      cb(null, subscriptionsToDelete);
+    });
+
+    return cb.promise;
+  }
+
+  function findExpired(cb) {
+    cb =  cb || utils.createPromiseCallback();
+
+    Subscription.findUnprocessed((err, pendingSubscriptions) => {
+      Subscription.findCompleted((err,completedSubscriptions) => {
+        const subscriptionsToDelete = [...pendingSubscriptions, ...completedSubscriptions];
+        cb(null, subscriptionsToDelete);
+      })
+    })
+
+    return cb.promise;
+  }
+
+  function findUnprocessed(cb) {
+    cb = cb || utils.createPromiseCallback();
+
+    const filter = {
+      where: {
+        status: 'pending'
+      },
+      order: 'subscriptionDate DESC'
+    };
+    Subscription.find(filter, (err, pendingSubscriptions) => {
+      let subscriptionsToDelete = pendingSubscriptions.filter(ps => {
+        const now = new Date();
+        let subscriptionDate = ps.subscriptionDate.getDate();
+        ps.subscriptionDate.setDate(subscriptionDate + 8);
+        return now > ps.subscriptionDate;
+      });
+      cb(null, subscriptionsToDelete);
+    });
+    
+    return cb.promise;
+  }
 
   function upload(req, fn) {
     fn = fn || utils.createPromiseCallback();
