@@ -33,7 +33,7 @@ module.exports  = function(Model, options) {
     }
 
     Model.remove = Model.destroyAll;
-    Model.deleteAll = Model.destroyAlll
+    Model.deleteAll = Model.destroyAll;
 
     /**
      * Soft Delete, this will set a row or data that is considered deleted
@@ -68,7 +68,7 @@ module.exports  = function(Model, options) {
         } else {
             if (!filter.where) filter.where = {};
 
-            if (!filter.includeDeleted && !filter.include) {
+            if (!filter.includeDeleted) {
                 filter.where = {
                     and: [filter.where, {
                         'isDeleted': false
