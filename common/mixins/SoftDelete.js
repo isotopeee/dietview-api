@@ -62,20 +62,18 @@ module.exports  = function(Model, options) {
      * @param   {function}  cb      Async Callback     
      */
     const _find = Model.find;
-    Model.find = function(filter, ...args) {
-        if (filter === undefined) {
-            filter = {};
-        } else {
-            if (!filter.where) filter.where = {};
+    Model.find = function(filter = {}, ...args) {
+        
+        if (!filter.where) filter.where = {};
 
-            if (!filter.includeDeleted) {
-                filter.where = {
-                    and: [filter.where, {
-                        'isDeleted': false
-                    }]
-                }
-            } 
-        }
+        if (!filter.includeDeleted) {
+            filter.where = {
+                and: [filter.where, {
+                    'isDeleted': false
+                }]
+            }
+        } 
+        
         console.log("filter:", JSON.stringify(filter));
         return _find.call(Model, filter, ...args);
     }
