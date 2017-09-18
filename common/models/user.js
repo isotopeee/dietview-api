@@ -1,9 +1,11 @@
 'use strict';
 
-module.exports = function(User) {
-    var utils = require('../../node_modules/loopback/lib/utils.js');
-    var g = require('strong-globalize')();
+const loopback = require('loopback');
+const utils = require('../../node_modules/loopback/lib/utils.js');
+const g = require('strong-globalize')();
+const path = require('path');
 
+module.exports = function(User) {
     /* Static Methods */
 
     //changePassword handler
@@ -117,6 +119,58 @@ module.exports = function(User) {
         }
         return next();
     });
+
+    User.afterRemote('*.__create__subscriptions', (context, subscription, next) => {
+        const MealPlan = User.app.models.MealPlan;
+
+        const expiryDate = new Date(subscription.subscriptionDate);
+        expiryDate.setDate(expiryDate.getDate() + 5);
+        
+        const filter = {
+            where: {
+                id: subscription.userId
+            }
+        };
+        User.find(filter, (err, users) => {
+            if(err) {
+                next(err);
+            }
+            const customer = users[0];
+
+            filter.where.id = subscription.mealPlanId;
+            MealPlan.find(filter, (err, mealPlans) => {
+                if(err) {
+                    next(err);
+                }
+                const mealPlan = mealPlans[0];
+
+                const templateData = {
+                    expiryDate: expiryDate.toLocaleDateString(),
+                    customerName: `${customer.account.profile.firstname} ${customer.account.profile.lastname}`,
+                    subscriptionDate: subscription.subscriptionDate.toLocaleDateString(),
+                    mealPlan: mealPlan.name,
+                    mealPlanPrice: `PHP ${mealPlan.price}.00`,
+                    total: `PHP ${mealPlan.price}.00`
+                };
+
+                const templateRenderer = loopback.template(path.resolve(__dirname, '../../server/views/subscription/payment.ejs'));
+                const emailHTML = templateRenderer(templateData);
+
+                User.app.models.Email.send({
+                    to: customer.email,
+                    from: 'dietviewph@gmail.com',
+                    subject: 'Subscription',
+                    html: emailHTML
+                }, (err) => {
+                    if(err){
+                        next(err);
+                    }
+                });
+            });
+        });
+
+        next();
+    })
 
     /* Event Handlers */
 

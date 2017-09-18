@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = function(Subscription) {
-  var g = require('strong-globalize')();
-  var utils = require('../../node_modules/loopback/lib/utils.js');
-  var path = require('path');
-  var formidable = require('formidable');
-  var fs = require('fs');
+const g = require('strong-globalize')();
+const utils = require('../../node_modules/loopback/lib/utils.js');
+const path = require('path');
+const formidable = require('formidable');
+const fs = require('fs');
 
+module.exports = function(Subscription) {
   /* Static Methods */
   Subscription.findCompleted = findCompleted;
   Subscription.findExpired = findExpired;

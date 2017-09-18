@@ -3,8 +3,11 @@
  */
 'use strict';
 
+const path = require('path');
+
 module.exports = function(app){
     const jobDate = new Date();
+    const Subscription = app.models.Subscription;
 
     Subscription.findUnprocessed((err, unprocessedSubscriptions) => {
         unprocessedSubscriptions = unprocessedSubscriptions.map(us => ({id: us.id}));
