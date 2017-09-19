@@ -1,3 +1,7 @@
+# Sept 10, 2017
+    - Remote hook on User.subscription.create to send email
+    - Remote hook on Subscription.upsert to send email
+
 # Sept 7, 2017
     - Implement job scheduler to remove expired subscriptions
 
