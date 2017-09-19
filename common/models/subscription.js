@@ -5,6 +5,7 @@ const utils = require('../../node_modules/loopback/lib/utils.js');
 const path = require('path');
 const formidable = require('formidable');
 const fs = require('fs');
+const loopback = require('loopback');
 
 module.exports = function(Subscription) {
   /* Static Methods */
@@ -80,6 +81,37 @@ module.exports = function(Subscription) {
       }
     }
   );
+
+  Subscription.afterRemote('upsert', (ctx, subscription, next) => {
+    console.log('upser after remote hook');
+    const subscriptionData = ctx.args.data;
+
+    const templateData = {
+      mealPlan: subscriptionData.mealPlan.name,
+      subscriptionDate: new Date(subscriptionData.subscriptionDate).toLocaleDateString(),
+      subscriptionStartDate: new Date(subscriptionData.startDate).toLocaleDateString(),
+      subscriptionEndDate: new Date(subscriptionData.endDate).toLocaleDateString(),
+      customerName: `${subscriptionData.user.account.profile.firstname} ${subscriptionData.user.account.profile.lastname}`,
+      mealPlanPrice: `PHP ${subscriptionData.mealPlan.price}.00`,
+      total: `PHP ${subscriptionData.mealPlan.price}.00`
+    }
+
+    const templateRenderer = loopback.template(path.resolve(__dirname, '../../server/views/subscription/approved.ejs'));
+    const emailHTML = templateRenderer(templateData);
+
+    Subscription.app.models.Email.send({
+        to: subscriptionData.user.email,
+        from: 'dietviewph@gmail.com',
+        subject: 'Subscription Aprroved',
+        html: emailHTML
+    }, (err) => {
+        if(err){
+            next(err);
+        }
+    });
+
+    next();
+  })
 
   //////////////////////////////////////////////////////////////////////////////
 
