@@ -3,9 +3,9 @@
   "base": "User",
   "idInjection": true,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "injectOptionsFromRemoteContext": true
   },
-  "injectOptionsFromRemoteContext": true,
   "properties": {
     "username": {
       "type": "string",
@@ -44,6 +44,11 @@
       "type": "hasMany",
       "model": "Subscription",
       "foreignKey": "userId"
+    },
+    "auditLogs": {
+      "type": "hasMany",
+      "model": "AuditLog",
+      "foreignKey": ""
     }
   },
   "acls": [

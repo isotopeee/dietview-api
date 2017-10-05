@@ -6,7 +6,8 @@
     "validateUpsert": true
   },
   "mixins": {
-    "SoftDelete": true
+    "SoftDelete": true,
+    "AuditLog": true
   },
   "properties": {
     "duration": {

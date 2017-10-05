@@ -1,3 +1,6 @@
+# Sept 30, 2017
+    - Implement Audit Logs
+
 # Sept 10, 2017
     - Remote hook on User.subscription.create to send email
     - Remote hook on Subscription.upsert to send email

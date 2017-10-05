@@ -73,5 +73,9 @@
   "TM_MealMealPlan": {
     "dataSource": "cloudant",
     "public": true
+  },
+  "AuditLog": {
+    "dataSource": "cloudant",
+    "public": true
   }
 }
