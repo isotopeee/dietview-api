@@ -77,5 +77,13 @@
   "AuditLog": {
     "dataSource": "cloudant",
     "public": true
+  },
+  "userIdentity": {
+    "dataSource": "cloudant",
+    "public": true
+  },
+  "userCredential": {
+    "dataSource": "cloudant",
+    "public": true
   }
 }

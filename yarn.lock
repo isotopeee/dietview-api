@@ -459,13 +459,6 @@ buffer@4.9.1:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-buffered-stream@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/buffered-stream/-/buffered-stream-0.0.1.tgz#e661e764169e1368b906b7e130afb8c2a195aa1d"
-  optionalDependencies:
-    each latest
-    pad latest
-
 bufferview@~1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/bufferview/-/bufferview-1.0.1.tgz#7afd74a45f937fa422a1d338c08bbfdc76cd725d"
@@ -1165,12 +1158,6 @@ duplexify@^3.1.2, duplexify@^3.2.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-each@latest:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/each/-/each-0.6.1.tgz#1181cc47933882055a590f70ae78c1b11f1b8865"
-  dependencies:
-    glob "~7.0.0"
-
 ecc-jsbn@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.1.tgz#0fc73a9ed5f0d53c38193398523ef7e543777505"
@@ -1667,7 +1654,7 @@ fstream-npm@^1.0.2:
     fstream-ignore "^1.0.0"
     inherits "2"
 
-fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2, fstream@^1.0.3:
+fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/fstream/-/fstream-1.0.11.tgz#5c1fb1f117477114f0632a0eb4b71b3cb0fd3171"
   dependencies:
@@ -1775,17 +1762,6 @@ glob@^7.0.5, glob@^7.1.1:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@~7.0.0:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-7.0.6.tgz#211bafaf49e525b8cd93260d14ab136152b3f57a"
-  dependencies:
-    fs.realpath "^1.0.0"
-    inflight "^1.0.4"
-    inherits "2"
-    minimatch "^3.0.2"
-    once "^1.3.0"
-    path-is-absolute "^1.0.0"
-
 got@^3.2.0:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/got/-/got-3.3.1.tgz#e5d0ed4af55fc3eef4d56007769d98192bcb2eca"
@@ -1800,12 +1776,6 @@ got@^3.2.0:
     prepend-http "^1.0.0"
     read-all-stream "^3.0.0"
     timed-out "^2.0.0"
-
-graceful-fs@^3.0.5:
-  version "3.0.11"
-  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-3.0.11.tgz#7613c778a1afea62f25c630a086d7f3acbbdd818"
-  dependencies:
-    natives "^1.1.0"
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   version "4.1.11"
@@ -2603,6 +2573,14 @@ loopback-component-explorer@^2.1.0:
     strong-globalize "^2.6.2"
     strong-swagger-ui "^21.0.0"
 
+loopback-component-passport@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/loopback-component-passport/-/loopback-component-passport-3.4.1.tgz#2c7c81ea23c72e4379e8114b992d7abf901fd885"
+  dependencies:
+    passport "^0.3.2"
+    strong-globalize "^2.6.2"
+    underscore "^1.8.3"
+
 loopback-component-storage@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/loopback-component-storage/-/loopback-component-storage-3.2.0.tgz#d6754defdbedc46b9600e8fbf1142594fcdcf72e"
@@ -2645,18 +2623,6 @@ loopback-connector-mysql@^1.2.1:
     mysql "^2.5.4"
   optionalDependencies:
     sl-blip "http://blip.strongloop.com/loopback-connector-mysql@1.7.0"
-
-loopback-connector-oracle@^1.2.1:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/loopback-connector-oracle/-/loopback-connector-oracle-1.7.2.tgz#781554d7c4142a40fa500b78c5b6ee6501f7e093"
-  dependencies:
-    async "^0.9.0"
-    debug "^2.1.1"
-    loopback-connector "1.x"
-    loopback-oracle-installer "~1.4.0"
-    strongloop-license "^1.0.2"
-  optionalDependencies:
-    sl-blip "http://blip.strongloop.com/loopback-connector-oracle@1.7.2"
 
 loopback-connector-remote@^1.0.3:
   version "1.3.3"
@@ -2736,16 +2702,6 @@ loopback-explorer@^1.7.0, loopback-explorer@^1.8.0:
     express "3.x"
     lodash "^2.4.1"
     swagger-ui "~2.0.18"
-
-loopback-oracle-installer@~1.4.0:
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/loopback-oracle-installer/-/loopback-oracle-installer-1.4.6.tgz#5439c955815b6982fc3740b3f9b67a40516592c6"
-  dependencies:
-    buffered-stream "^0.0.1"
-    fstream "^1.0.3"
-    graceful-fs "^3.0.5"
-    request "^2.51.0"
-    tar "^1.0.3"
 
 loopback-phase@^1.2.0, loopback-phase@^1.3.0:
   version "1.4.1"
@@ -3157,10 +3113,6 @@ nan@~2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.6.2.tgz#e4ff34e6c95fdfb5aecc08de6596f43605a7db45"
 
-natives@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.0.tgz#e9ff841418a6b2ec7a495e939984f78f163e6e31"
-
 negotiator@0.4.9:
   version "0.4.9"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.4.9.tgz#92e46b6db53c7e421ed64a2bc94f08be7630df3f"
@@ -3331,6 +3283,10 @@ oauth-sign@~0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
 
+oauth@0.9.x:
+  version "0.9.15"
+  resolved "https://registry.yarnpkg.com/oauth/-/oauth-0.9.15.tgz#bd1fefaf686c96b75475aed5196412ff60cfb9c1"
+
 object-assign@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-1.0.0.tgz#e65dc8766d3b47b4b8307465c8311da030b070a6"
@@ -3430,10 +3386,6 @@ package-json@^1.0.0:
     got "^3.2.0"
     registry-url "^3.0.0"
 
-pad@latest:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/pad/-/pad-1.1.0.tgz#7a7d185200ebac32f9f12ee756c3a1d087b3190b"
-
 parse-glob@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/parse-glob/-/parse-glob-3.0.4.tgz#b2c376cfb11f35513badd173ef0bb6e3a388391c"
@@ -3446,6 +3398,32 @@ parse-glob@^3.0.4:
 parseurl@~1.3.0, parseurl@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.1.tgz#c8ab8c9223ba34888aa64a297b28853bec18da56"
+
+passport-facebook@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/passport-facebook/-/passport-facebook-2.1.1.tgz#c39d0b52ae4d59163245a4e21a7b9b6321303311"
+  dependencies:
+    passport-oauth2 "1.x.x"
+
+passport-oauth2@1.x.x:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/passport-oauth2/-/passport-oauth2-1.4.0.tgz#f62f81583cbe12609be7ce6f160b9395a27b86ad"
+  dependencies:
+    oauth "0.9.x"
+    passport-strategy "1.x.x"
+    uid2 "0.0.x"
+    utils-merge "1.x.x"
+
+passport-strategy@1.x.x:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
+
+passport@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/passport/-/passport-0.3.2.tgz#9dd009f915e8fe095b0124a01b8f82da07510102"
+  dependencies:
+    passport-strategy "1.x.x"
+    pause "0.0.1"
 
 path-is-absolute@^1.0.0:
   version "1.0.1"
@@ -3464,6 +3442,10 @@ pause-stream@0.0.11:
   resolved "https://registry.yarnpkg.com/pause-stream/-/pause-stream-0.0.11.tgz#fe5a34b0cbce12b5aa6a2b403ee2e73b602f1445"
   dependencies:
     through "~2.3"
+
+pause@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/pause/-/pause-0.0.1.tgz#1d408b3fdb76923b9543d96fb4c9dfd535d9cb5d"
 
 pause@0.1.0:
   version "0.1.0"
@@ -3878,7 +3860,7 @@ request@2.76.0:
     tough-cookie "~2.3.0"
     tunnel-agent "~0.4.1"
 
-request@>=2.12.0, request@^2.37.0, request@^2.39.0, request@^2.51.0, request@^2.53.0, request@^2.54.0, request@^2.55.0, request@^2.81.0, request@~2.81.0:
+request@>=2.12.0, request@^2.37.0, request@^2.39.0, request@^2.53.0, request@^2.54.0, request@^2.55.0, request@^2.81.0, request@~2.81.0:
   version "2.81.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
   dependencies:
@@ -4168,11 +4150,6 @@ signal-exit@^3.0.0:
 "sl-blip@http://blip.strongloop.com/loopback-connector-mysql@1.7.0":
   version "1.0.0"
   resolved "http://blip.strongloop.com/loopback-connector-mysql@1.7.0#99c3bdcb734041b6a956c5c2ba218a5ec90dcda2"
-
-"sl-blip@http://blip.strongloop.com/loopback-connector-oracle@1.7.2":
-  version "1.0.0"
-  uid "99c3bdcb734041b6a956c5c2ba218a5ec90dcda2"
-  resolved "http://blip.strongloop.com/loopback-connector-oracle@1.7.2#99c3bdcb734041b6a956c5c2ba218a5ec90dcda2"
 
 slash@^1.0.0:
   version "1.0.0"
@@ -4783,7 +4760,7 @@ strong-url-defaults@^1.0.0, strong-url-defaults@^1.2.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/strong-url-defaults/-/strong-url-defaults-1.2.3.tgz#6fdb74db38a6d1a140549ad894425319f7019067"
 
-strongloop-license@^1.0.2, strongloop-license@^1.0.4, strongloop-license@^1.3.0:
+strongloop-license@^1.0.4, strongloop-license@^1.3.0:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/strongloop-license/-/strongloop-license-1.5.2.tgz#f0e240f8f7258b2359cc55b9416e77fa37e84aa9"
   dependencies:
@@ -4908,14 +4885,6 @@ tar-stream@^1.1.2:
     end-of-stream "^1.0.0"
     readable-stream "^2.0.0"
     xtend "^4.0.0"
-
-tar@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-1.0.3.tgz#15bcdab244fa4add44e4244a0176edb8aa9a2b44"
-  dependencies:
-    block-stream "*"
-    fstream "^1.0.2"
-    inherits "2"
 
 tar@^2.0.0, tar@^2.2.1:
   version "2.2.1"
@@ -5091,7 +5060,7 @@ uid-safe@~2.0.0:
   dependencies:
     base64-url "1.2.1"
 
-uid2@0.0.3:
+uid2@0.0.3, uid2@0.0.x:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/uid2/-/uid2-0.0.3.tgz#483126e11774df2f71b8b639dcd799c376162b82"
 
@@ -5182,6 +5151,10 @@ util@~0.10.3:
 utils-merge@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
+
+utils-merge@1.x.x:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
 
 uuid@3.0.1:
   version "3.0.1"

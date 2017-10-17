@@ -1,3 +1,6 @@
+# Oct 10, 2017
+    - Implement social media integration
+
 # Sept 30, 2017
     - Implement Audit Logs
 

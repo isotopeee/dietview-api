@@ -49,6 +49,16 @@
       "type": "hasMany",
       "model": "AuditLog",
       "foreignKey": ""
+    },
+    "credentials": {
+      "type": "hasMany",
+      "model": "userCredential",
+      "foreignKey": ""
+    },
+    "identities": {
+      "type": "hasMany",
+      "model": "userIdentity",
+      "foreignKey": ""
     }
   },
   "acls": [
