@@ -7,7 +7,12 @@
   },
   "mixins": {
     "SoftDelete": true,
-    "AuditLog": true
+    "AuditLog": true,
+    "UniqueValidator": {
+      "properties": [
+        "name"
+      ]
+    }
   },
   "properties": {
     "name": {

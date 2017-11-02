@@ -1,5 +1,6 @@
 # Oct 30, 2017
     - Audit login and logout
+    - Implement unique fields validation
 
 # Oct 10, 2017
     - Implement social media integration
