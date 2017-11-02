@@ -6,6 +6,9 @@
     "validateUpsert": true,
     "injectOptionsFromRemoteContext": true
   },
+  "mixins": {
+    "AuditLog": true
+  },
   "properties": {
     "username": {
       "type": "string",

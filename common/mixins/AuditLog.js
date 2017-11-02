@@ -9,7 +9,9 @@ module.exports = function(Model, options) {
         UPDATE: 'update',
         CREATE: 'create',
         SOFT_DELETE: 'soft_delete',
-        READ: 'read'
+        READ: 'read',
+        LOGIN: 'login',
+        LOGOUT: 'logout'
     }
 
     Model.afterRemote('create', function (ctx, modelInstance, next) {
@@ -81,6 +83,46 @@ module.exports = function(Model, options) {
             }
         });
 
+        next();
+    });
+
+    Model.afterRemote('login', function(ctx, {userId}, next) {
+        const AuditLog = app.models.AuditLog;
+
+        const auditLog = {
+            userId: userId,
+            eventDate: new Date(),
+            eventType: EVENT_TYPES.LOGIN,
+            description: 'User login'
+        };
+
+        AuditLog.create(auditLog, (err, auditLog) => {
+            if (err) {
+                next(err)
+            }
+        });
+        next();
+    });
+
+    Model.afterRemote('logout', function (ctx, modelInstance, next) {
+        const AuditLog = app.models.AuditLog;
+
+        const token = ctx.req.accessToken;
+        const userId = token && token.userId;
+
+        const auditLog = {
+            userId: userId,
+            eventDate: new Date(),
+            eventType: EVENT_TYPES.LOGOUT,
+            description: 'User logout'
+        };
+
+        AuditLog.create(auditLog, (err, auditLog) => {
+            if (err) {
+                next(err)
+            }
+        });
+        
         next();
     });
 }
