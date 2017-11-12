@@ -4,6 +4,10 @@ module.exports = function(Model, {properties}) {
      */
 
     for (property of properties) {
-        Model.validatesUniquenessOf(property, {message: `${property} is not unique`})
+        if (typeof property === 'object') {
+            Model.validatesUniquenessOf(property.field, { message: property.message })
+        } else {
+            Model.validatesUniquenessOf(property, {message: `${property} is not unique`})
+        }
     }
 }
