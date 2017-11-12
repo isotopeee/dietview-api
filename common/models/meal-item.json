@@ -10,7 +10,11 @@
     "AuditLog": true,
     "UniqueValidator": {
       "properties": [
-        "name"
+        "name",
+        {
+          "field": "name",
+          "message": "Tne name of the meal-item is already existing in the system."
+        }
       ]
     }
   },
